@@ -1,0 +1,60 @@
+<!--settings.wxml-->
+<view class="container">
+  <view class="section">
+    <view class="section-title">服务号推送设置</view>
+    <view class="setting-item">
+      <view class="setting-info">
+        <text class="setting-label">开启尾款提醒</text>
+        <text class="setting-desc">在尾款到期前收到服务号推送提醒</text>
+      </view>
+      <switch 
+        checked="{{enableReminder}}" 
+        bindchange="toggleReminder"
+        color="#07C160"
+      />
+    </view>
+    <view class="setting-item">
+      <view class="setting-info">
+        <text class="setting-label">提醒时间</text>
+        <text class="setting-desc">提前几天提醒</text>
+      </view>
+      <picker 
+        mode="selector" 
+        range="{{remindDaysOptions}}" 
+        bindchange="onRemindDaysChange"
+        value="{{remindDaysIndex}}">
+        <view class="picker-value">
+          提前{{remindDaysOptions[remindDaysIndex]}}天
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">绑定服务号</view>
+    <view class="bind-tip">
+      <text wx:if="{{!hasBind}}">
+        点击下方按钮绑定服务号，绑定后才能接收推送提醒
+      </text>
+      <text wx:else class="bind-success">
+        ✅ 已成功绑定服务号
+      </text>
+    </view>
+    <button 
+      wx:if="{{!hasBind}}" 
+      class="btn bind-btn" 
+      bindtap="bindServiceAccount">
+      绑定服务号
+    </button>
+  </view>
+
+  <view class="section">
+    <view class="section-title">测试推送</view>
+    <button 
+      class="btn test-btn" 
+      bindtap="testPush"
+      disabled="{{!enableReminder}}">
+      发送测试消息
+    </button>
+  </view>
+</view>

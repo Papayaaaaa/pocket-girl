@@ -1,0 +1,64 @@
+<!--detail.wxml-->
+<view class="container">
+  <view class="card">
+    <view class="detail-header">
+      <view class="detail-title">{{record.name}}</view>
+      <view class="tag tag-{{record.category}}">{{record.categoryText}}</view>
+    </view>
+    
+    <view class="detail-shop" wx:if="{{record.shop}}">🏪 {{record.shop}}</view>
+    
+    <view class="detail-amounts">
+      <view class="amount-row">
+        <text class="amount-label">定金</text>
+        <text class="amount">¥{{record.deposit}}</text>
+      </view>
+      <view class="amount-row">
+        <text class="amount-label">尾款</text>
+        <text class="amount amount-pending">¥{{record.tailPrice}}</text>
+      </view>
+      <view class="amount-row total">
+        <text class="amount-label">总价</text>
+        <text class="amount">¥{{record.totalPrice}}</text>
+      </view>
+    </view>
+    
+    <view class="detail-deadline">
+      <text class="deadline-label">尾款截止</text>
+      <text class="deadline-date {{record.daysLeft <= 3 ? 'urgent' : ''}}">{{record.tailDeadline}}</text>
+      <text class="deadline-tip" wx:if="{{!record.isPaid}}">
+        ({{record.daysLeft > 0 ? record.daysLeft + '天后' : '已到期'}})
+      </text>
+    </view>
+    
+    <view class="detail-remark" wx:if="{{record.remark}}">
+      <text class="remark-label">备注</text>
+      <text class="remark-content">{{record.remark}}</text>
+    </view>
+
+    <view class="detail-images" wx:if="{{record.images && record.images.length > 0}}">
+      <text class="remark-label">图片</text>
+      <scroll-view class="images-scroll" scroll-x="true">
+        <block wx:for="{{record.images}}" wx:key="*this">
+          <image 
+            src="{{item}}" 
+            mode="aspectFill" 
+            class="detail-image"
+            bindtap="previewImage"
+            data-index="{{index}}"
+          />
+        </block>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-btns">
+    <view class="btn btn-secondary" bindtap="togglePaid">
+      {{record.isPaid ? '标记为未支付' : '标记为已支付'}}
+    </view>
+    <view class="btn btn-edit" bindtap="editRecord">编辑</view>
+  </view>
+  
+  <view class="btn btn-danger" bindtap="deleteRecord">删除记录</view>
+</view>

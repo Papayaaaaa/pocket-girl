@@ -1,0 +1,145 @@
+<!--add.wxml-->
+<view class="container">
+  <view class="form-group">
+    <view class="form-label">商品名称 *</view>
+    <input 
+      class="input" 
+      placeholder="例：原神周边立牌" 
+      value="{{name}}"
+      bindinput="onInput"
+      data-field="name"
+    />
+  </view>
+
+  <view class="form-group">
+    <view class="form-label">类型 *</view>
+    <view class="category-grid">
+      <view 
+        class="category-item {{category === 'guzi' ? 'active' : ''}}" 
+        bindtap="setCategory" 
+        data-category="guzi">
+        <text class="category-icon">🎁</text>
+        <text>谷子</text>
+      </view>
+      <view 
+        class="category-item {{category === 'hanfu' ? 'active' : ''}}" 
+        bindtap="setCategory" 
+        data-category="hanfu">
+        <text class="category-icon">🏮</text>
+        <text>汉服</text>
+      </view>
+      <view 
+        class="category-item {{category === 'lo' ? 'active' : ''}}" 
+        bindtap="setCategory" 
+        data-category="lo">
+        <text class="category-icon">👗</text>
+        <text>Lo裙</text>
+      </view>
+      <view 
+        class="category-item {{category === 'other' ? 'active' : ''}}" 
+        bindtap="setCategory" 
+        data-category="other">
+        <text class="category-icon">📦</text>
+        <text>其他</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-group">
+    <view class="form-label">店铺</view>
+    <input 
+      class="input" 
+      placeholder="例：天猫旗舰店" 
+      value="{{shop}}"
+      bindinput="onInput"
+      data-field="shop"
+    />
+  </view>
+
+  <view class="form-group">
+    <view class="form-label">金额</view>
+    <view class="amount-inputs">
+      <view class="amount-input-item">
+        <text class="amount-label">定金 ¥</text>
+        <input 
+          class="input" 
+          type="digit" 
+          placeholder="0" 
+          value="{{deposit}}"
+          bindinput="onInput"
+          data-field="deposit"
+        />
+      </view>
+      <view class="amount-input-item">
+        <text class="amount-label">尾款 ¥</text>
+        <input 
+          class="input" 
+          type="digit" 
+          placeholder="0" 
+          value="{{tailPrice}}"
+          bindinput="onInput"
+          data-field="tailPrice"
+        />
+      </view>
+    </view>
+    <view class="total-preview">
+      总价: ¥{{totalPrice}}
+    </view>
+  </view>
+
+  <view class="form-group">
+    <view class="form-label">尾款截止日期 *</view>
+    <picker 
+      mode="date" 
+      value="{{tailDeadline}}" 
+      bindchange="onDateChange"
+      start="2024-01-01"
+      end="2030-12-31">
+      <view class="picker-trigger">
+        <text>{{tailDeadline || '请选择日期'}}</text>
+        <text class="arrow">›</text>
+      </view>
+    </picker>
+  </view>
+
+  <view class="form-group">
+    <view class="form-label">备注</view>
+    <textarea 
+      class="textarea" 
+      placeholder="可选备注信息..." 
+      value="{{remark}}"
+      bindinput="onInput"
+      data-field="remark"
+    />
+  </view>
+
+  <view class="form-group">
+    <view class="form-label">图片</view>
+    <view class="image-grid">
+      <block wx:for="{{images}}" wx:key="*this">
+        <view class="image-item">
+          <image 
+            src="{{item}}" 
+            mode="aspectFill" 
+            class="image-preview"
+            bindtap="previewImage"
+            data-index="{{index}}"
+          />
+          <view 
+            class="image-delete" 
+            bindtap="deleteImage" 
+            data-index="{{index}}">×</view>
+        </view>
+      </block>
+      <view 
+        class="image-add" 
+        bindtap="chooseImage" 
+        wx:if="{{images.length < 9}}">
+        <text class="add-icon">+</text>
+        <text class="add-text">添加图片</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="btn save-btn" bindtap="saveRecord">保存</view>
+</view>

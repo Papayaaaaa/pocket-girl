@@ -1,0 +1,136 @@
+/* detail.wxss */
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16rpx;
+}
+
+.detail-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.detail-shop {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 32rpx;
+}
+
+.detail-amounts {
+  background: #F5F5F7;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.amount-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12rpx 0;
+}
+
+.amount-row:not(:last-child) {
+  border-bottom: 1rpx solid #E0E0E0;
+}
+
+.amount-row.total {
+  border-top: 2rpx solid #E0E0E0;
+  margin-top: 12rpx;
+  padding-top: 20rpx;
+  font-weight: 600;
+}
+
+.amount-label {
+  color: #666;
+}
+
+.amount-row.total .amount {
+  font-size: 40rpx;
+}
+
+.detail-deadline {
+  display: flex;
+  align-items: center;
+  background: #FFF8E6;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.deadline-label {
+  color: #666;
+  margin-right: 16rpx;
+}
+
+.deadline-date {
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+.deadline-date.urgent {
+  color: #FF6B6B;
+}
+
+.deadline-tip {
+  margin-left: 12rpx;
+  color: #FF9500;
+  font-size: 24rpx;
+}
+
+.detail-remark {
+  background: #F5F5F7;
+  border-radius: 12rpx;
+  padding: 20rpx;
+}
+
+.remark-label {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.remark-content {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.action-btns {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.action-btns .btn {
+  flex: 1;
+}
+
+.btn-edit {
+  background: #07C160;
+  color: #fff;
+}
+
+.btn-danger {
+  background: #FFF0F0;
+  color: #FF6B6B;
+}
+
+.detail-images {
+  margin-top: 24rpx;
+}
+
+.images-scroll {
+  white-space: nowrap;
+  margin-top: 12rpx;
+}
+
+.detail-image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 12rpx;
+  margin-right: 16rpx;
+  display: inline-block;
+}

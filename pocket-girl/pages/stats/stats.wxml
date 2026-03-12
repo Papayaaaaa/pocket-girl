@@ -1,0 +1,51 @@
+<!--stats.wxml-->
+<view class="container">
+  <!-- 总览卡片 -->
+  <view class="card stats-overview">
+    <view class="overview-title">💰 消费总览</view>
+    <view class="overview-grid">
+      <view class="overview-item">
+        <text class="overview-label">待支付</text>
+        <text class="overview-amount pending">¥{{stats.pendingTail}}</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-label">已完成</text>
+        <text class="overview-amount paid">¥{{stats.paidTotal}}</text>
+      </view>
+    </view>
+    <view class="overview-total">
+      <text>累计消费</text>
+      <text class="total-amount">¥{{stats.total}}</text>
+    </view>
+  </view>
+
+  <!-- 分类统计 -->
+  <view class="card stats-category">
+    <view class="stats-title">📊 分类统计</view>
+    <view class="category-bars">
+      <view class="category-bar-item" wx:for="{{categoryStats}}" wx:key="category">
+        <view class="bar-label">
+          <text>{{item.name}}</text>
+          <text>¥{{item.amount}}</text>
+        </view>
+        <view class="bar-track">
+          <view class="bar-fill" style="width: {{item.percent}}%; background: {{item.color}}"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 近期到期 -->
+  <view class="card upcoming-section" wx:if="{{upcomingRecords.length > 0}}">
+    <view class="stats-title">⏰ 近期需要尾款</view>
+    <view class="upcoming-list">
+      <view class="upcoming-item" wx:for="{{upcomingRecords}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+        <view class="upcoming-info">
+          <text class="upcoming-name">{{item.name}}</text>
+          <text class="upcoming-date">{{item.tailDeadline}}</text>
+        </view>
+        <text class="upcoming-amount">¥{{item.tailPrice}}</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,77 @@
+<!--index.wxml-->
+<view class="container">
+  <!-- 设置按钮 -->
+  <view class="header-bar">
+    <view class="header-title">尾款助手</view>
+    <view class="settings-icon" bindtap="goToSettings">⚙️</view>
+  </view>
+
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <view 
+      class="filter-item {{filterType === 'all' ? 'active' : ''}}" 
+      bindtap="setFilter" 
+      data-type="all">全部</view>
+    <view 
+      class="filter-item {{filterType === 'pending' ? 'active' : ''}}" 
+      bindtap="setFilter" 
+      data-type="pending">待尾款</view>
+    <view 
+      class="filter-item {{filterType === 'paid' ? 'active' : ''}}" 
+      bindtap="setFilter" 
+      data-type="paid">已完成</view>
+  </view>
+
+  <!-- 订单列表 -->
+  <view class="record-list">
+    <block wx:if="{{filteredRecords.length === 0}}">
+      <view class="empty-state">
+        <text class="empty-icon">📦</text>
+        <text class="empty-text">暂无记录\n点击下方 + 添加第一个订单</text>
+      </view>
+    </block>
+    
+    <block wx:for="{{filteredRecords}}" wx:key="id">
+      <view class="card record-card" bindtap="goToDetail" data-id="{{item.id}}">
+        <view class="record-header">
+          <view class="record-title">{{item.name}}</view>
+          <view class="tag tag-{{item.category}}">{{item.categoryText}}</view>
+        </view>
+        
+        <view class="record-shop">{{item.shop}}</view>
+        
+        <view class="record-amounts">
+          <view class="amount-item">
+            <text class="amount-label">定金</text>
+            <text class="amount amount-paid">¥{{item.deposit}}</text>
+          </view>
+          <view class="amount-item">
+            <text class="amount-label">尾款</text>
+            <text class="amount amount-pending">¥{{item.tailPrice}}</text>
+          </view>
+          <view class="amount-item">
+            <text class="amount-label">总价</text>
+            <text class="amount">¥{{item.totalPrice}}</text>
+          </view>
+        </view>
+        
+        <view class="record-footer">
+          <view class="deadline {{item.daysLeft <= 3 ? 'urgent' : ''}}">
+            <text wx:if="{{item.isPaid}}">✅ 已完成</text>
+            <text wx:elif="{{item.daysLeft <= 0}}">⚠️ 已到期</text>
+            <text wx:elif="{{item.daysLeft <= 7}}">📅 {{item.daysLeft}}天后尾款</text>
+            <text wx:else>📅 {{item.tailDeadline}}</text>
+          </view>
+          <view class="status-badge {{item.isPaid ? 'paid' : 'pending'}}">
+            {{item.isPaid ? '已完成' : '待支付'}}
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="add-btn" bindtap="goToAdd">
+    <text>+</text>
+  </view>
+</view>

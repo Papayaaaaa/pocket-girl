@@ -1,0 +1,75 @@
+/** app.wxss **/
+page {
+  background-color: #F5F5F7;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.container {
+  padding: 24rpx;
+}
+
+/* 卡片样式 */
+.card {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+/* 按钮样式 */
+.btn {
+  background: #07C160;
+  color: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx 0;
+  font-size: 30rpx;
+  text-align: center;
+  font-weight: 500;
+}
+
+.btn:active {
+  opacity: 0.8;
+}
+
+.btn-secondary {
+  background: #F5F5F7;
+  color: #333;
+}
+
+/* 输入框 */
+.input {
+  background: #F5F5F7;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  font-size: 28rpx;
+}
+
+.input-placeholder {
+  color: #999;
+}
+
+/* 标签 */
+.tag {
+  display: inline-block;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.tag-guzi { background: #FFF0F5; color: #FF6B9D; }
+.tag-hanfu { background: #F0FFF0; color: #52C41A; }
+.tag-lo { background: #FFF5E6; color: #FF9500; }
+.tag-other { background: #F0F0F0; color: #666; }
+
+/* 金额 */
+.amount {
+  font-size: 36rpx;
+  font-weight: 600;
+}
+
+.amount-paid { color: #07C160; }
+.amount-pending { color: #FF6B6B; }

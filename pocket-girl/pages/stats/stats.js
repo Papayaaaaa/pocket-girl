@@ -1,6 +1,8 @@
 // stats.js
 Page({
   data: {
+    currentPeriod: 'half', // 'half' or 'month'
+    periodLabel: '半月',
     stats: {
       pendingTail: 0,
       paidTotal: 0,
@@ -14,18 +16,59 @@ Page({
     this.loadStats()
   },
 
+  switchPeriod(e) {
+    const period = e.currentTarget.dataset.period
+    const labels = { half: '半月', month: '月度' }
+    this.setData({
+      currentPeriod: period,
+      periodLabel: labels[period]
+    })
+    this.loadStats()
+  },
+
   loadStats() {
     const records = wx.getStorageSync('records') || []
+    const period = this.data.currentPeriod
     
-    // 计算总览
+    // 根据周期筛选记录
+    const now = new Date()
+    let startDate, endDate
+    
+    if (period === 'half') {
+      // 半月：当前半月的统计
+      const day = now.getDate()
+      if (day <= 15) {
+        // 上半月
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+        endDate = new Date(now.getFullYear(), now.getMonth(), 15)
+      } else {
+        // 下半月
+        startDate = new Date(now.getFullYear(), now.getMonth(), 16)
+        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+      }
+    } else {
+      // 月度：当月
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+      endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+    }
+    
+    // 筛选该周期的记录（按尾款截止日）
+    const periodRecords = records.filter(r => {
+      if (!r.tailDeadline) return false
+      const deadline = new Date(r.tailDeadline)
+      return deadline >= startDate && deadline <= endDate
+    })
+    
+    // 计算该周期统计
     let pendingTail = 0
     let paidTotal = 0
     
-    records.forEach(r => {
+    periodRecords.forEach(r => {
+      const amount = (r.tailPrice || 0) + (r.deposit || 0)
       if (r.isPaid) {
-        paidTotal += r.totalPrice
+        paidTotal += amount
       } else {
-        pendingTail += r.tailPrice
+        pendingTail += amount
       }
     })
 
@@ -38,11 +81,12 @@ Page({
     }
     
     const categoryAmounts = {}
-    records.forEach(r => {
+    periodRecords.forEach(r => {
+      const amount = (r.tailPrice || 0) + (r.deposit || 0)
       if (!categoryAmounts[r.category]) {
         categoryAmounts[r.category] = 0
       }
-      categoryAmounts[r.category] += r.totalPrice
+      categoryAmounts[r.category] += amount
     })
     
     const total = pendingTail + paidTotal
@@ -51,19 +95,20 @@ Page({
         category,
         name: categoryMap[category]?.name || '其他',
         color: categoryMap[category]?.color || '#999',
-        amount,
+        amount: amount.toFixed(2),
         percent: total > 0 ? (amount / total * 100) : 0
       }))
       .sort((a, b) => b.amount - a.amount)
 
-    // 近期需要尾款的记录（未完成，7天内）
-    const now = new Date()
+    // 近期需要尾款的记录（未来30天内未完成）
+    const thirtyDaysLater = new Date()
+    thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30)
+    
     const upcomingRecords = records
       .filter(r => {
         if (r.isPaid) return false
         const deadline = new Date(r.tailDeadline)
-        const daysLeft = (deadline - now) / (1000 * 60 * 60 * 24)
-        return daysLeft <= 7
+        return deadline >= now && deadline <= thirtyDaysLater
       })
       .sort((a, b) => new Date(a.tailDeadline) - new Date(b.tailDeadline))
       .slice(0, 5)

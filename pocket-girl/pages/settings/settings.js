@@ -2,7 +2,7 @@
 Page({
   data: {
     enableReminder: false,
-    remindDaysOptions: [1, 2, 3, 5, 7],
+    remindDaysOptions: [1, 3, 7, 14, 21, 30],
     remindDaysIndex: 1, // 默认提前2天
     hasBind: false,
     // AI 设置

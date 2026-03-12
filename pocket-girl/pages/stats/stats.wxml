@@ -1,8 +1,14 @@
 <!--stats.wxml-->
 <view class="container">
+  <!-- 统计周期切换 -->
+  <view class="period-tabs">
+    <view class="tab-item {{currentPeriod === 'half' ? 'active' : ''}}" bindtap="switchPeriod" data-period="half">半月</view>
+    <view class="tab-item {{currentPeriod === 'month' ? 'active' : ''}}" bindtap="switchPeriod" data-period="month">月度</view>
+  </view>
+
   <!-- 总览卡片 -->
   <view class="card stats-overview">
-    <view class="overview-title">💰 消费总览</view>
+    <view class="overview-title">💰 {{periodLabel}}消费总览</view>
     <view class="overview-grid">
       <view class="overview-item">
         <text class="overview-label">待支付</text>

@@ -20,10 +20,21 @@ Page({
     const year = now.getFullYear()
     const month = now.getMonth() + 1
     
-    // 生成最近12个月的选项
+    // 生成最近1个月+未来11个月的选项（共12个月）
     const months = []
-    for (let i = 0; i < 12; i++) {
+    // 过去1个月
+    for (let i = 0; i < 1; i++) {
       const d = new Date(year, month - 1 - i, 1)
+      const y = d.getFullYear()
+      const m = d.getMonth() + 1
+      months.push({
+        value: `${y}-${m.toString().padStart(2, '0')}`,
+        label: `${y}年${m}月`
+      })
+    }
+    // 未来11个月
+    for (let i = 1; i <= 11; i++) {
+      const d = new Date(year, month - 1 + i, 1)
       const y = d.getFullYear()
       const m = d.getMonth() + 1
       months.push({

@@ -4,7 +4,11 @@ Page({
     enableReminder: false,
     remindDaysOptions: [1, 2, 3, 5, 7],
     remindDaysIndex: 1, // 默认提前2天
-    hasBind: false
+    hasBind: false,
+    // AI 设置
+    aiProviderOptions: ['Moonshot AI (月之暗面)', 'OpenAI GPT-4', 'Anthropic Claude'],
+    aiProviderIndex: 0,
+    aiApiKey: ''
   },
 
   onLoad() {
@@ -13,11 +17,25 @@ Page({
 
   loadSettings() {
     const settings = wx.getStorageSync('userSettings') || {}
+    const providerMap = { 'moonshot': 0, 'openai': 1, 'anthropic': 2 }
     this.setData({
       enableReminder: settings.enableReminder || false,
       remindDaysIndex: settings.remindDaysIndex || 1,
-      hasBind: settings.hasBind || false
+      hasBind: settings.hasBind || false,
+      aiProviderIndex: providerMap[settings.aiProvider] || 0,
+      aiApiKey: settings.aiApiKey || ''
     })
+  },
+
+  // AI 设置相关
+  onAiProviderChange(e) {
+    this.setData({ aiProviderIndex: e.detail.value })
+    this.saveSettings()
+  },
+
+  onAiApiKeyInput(e) {
+    this.setData({ aiApiKey: e.detail.value })
+    this.saveSettings()
   },
 
   toggleReminder(e) {
@@ -114,10 +132,13 @@ Page({
   },
 
   saveSettings() {
+    const providerMap = { 0: 'moonshot', 1: 'openai', 2: 'anthropic' }
     const settings = {
       enableReminder: this.data.enableReminder,
       remindDaysIndex: this.data.remindDaysIndex,
-      hasBind: this.data.hasBind
+      hasBind: this.data.hasBind,
+      aiProvider: providerMap[this.data.aiProviderIndex],
+      aiApiKey: this.data.aiApiKey
     }
     wx.setStorageSync('userSettings', settings)
   }

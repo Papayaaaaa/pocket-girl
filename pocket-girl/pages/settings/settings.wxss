@@ -82,3 +82,17 @@
 .test-btn[disabled] {
   color: #999;
 }
+
+.setting-item.column {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.api-input {
+  width: 100%;
+  background: #F5F5F7;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  margin-top: 16rpx;
+}

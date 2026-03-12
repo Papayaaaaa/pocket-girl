@@ -1,5 +1,43 @@
 <!--settings.wxml-->
 <view class="container">
+  <!-- AI 识别设置 -->
+  <view class="section">
+    <view class="section-title">🤖 AI 智能识别设置</view>
+    <view class="setting-item">
+      <view class="setting-info">
+        <text class="setting-label">AI 提供商</text>
+        <text class="setting-desc">选择要使用的 AI 服务</text>
+      </view>
+      <picker 
+        mode="selector" 
+        range="{{aiProviderOptions}}" 
+        bindchange="onAiProviderChange"
+        value="{{aiProviderIndex}}">
+        <view class="picker-value">
+          {{aiProviderOptions[aiProviderIndex]}}
+        </view>
+      </picker>
+    </view>
+    <view class="setting-item column">
+      <view class="setting-info">
+        <text class="setting-label">API Key</text>
+        <text class="setting-desc">输入你的 AI API Key</text>
+      </view>
+      <input 
+        class="api-input" 
+        placeholder="请输入 API Key"
+        value="{{aiApiKey}}"
+        bindinput="onAiApiKeyInput"
+        password="true"
+      />
+    </view>
+    <view class="bind-tip">
+      <text wx:if="{{aiApiKey}}">✅ API Key 已配置</text>
+      <text wx:else>未配置 API Key，将使用基础 OCR 识别</text>
+    </view>
+  </view>
+
+  <!-- 服务号推送设置 -->
   <view class="section">
     <view class="section-title">服务号推送设置</view>
     <view class="setting-item">

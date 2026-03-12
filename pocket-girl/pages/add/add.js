@@ -51,9 +51,14 @@ Page({
     })
   },
 
-  // AI 智能识别
+  // AI 智能识别（如果没有配置 API Key，则使用 OCR）
   recognizeWithAI() {
     if (this.data.isRecognizing) return
+    
+    // 获取用户设置
+    const settings = wx.getStorageSync('userSettings') || {}
+    const apiKey = settings.aiApiKey
+    const apiProvider = settings.aiProvider || 'moonshot'
     
     wx.chooseMedia({
       count: 1,
@@ -61,73 +66,153 @@ Page({
       sourceType: ['album', 'camera'],
       success: (res) => {
         const tempFilePath = res.tempFiles[0].tempFilePath
-        this.setData({ isRecognizing: true })
-        wx.showLoading({ title: 'AI 识别中...' })
         
-        // 先上传图片到云存储
-        wx.cloud.uploadFile({
-          cloudPath: `ocr/${Date.now()}.png`,
-          filePath: tempFilePath,
-          success: (uploadRes) => {
-            // 调用云函数进行 AI 识别
-            wx.cloud.callFunction({
-              name: 'aiRecognize',
-              data: {
-                imageUrl: uploadRes.fileID
-              },
-              success: (aiRes) => {
-                wx.hideLoading()
-                console.log('AI 识别结果:', aiRes)
-                
-                if (aiRes.result && aiRes.result.success) {
-                  const data = aiRes.result.data
-                  this.setData({
-                    name: data.name || '',
-                    category: data.category || 'guzi',
-                    shop: data.shop || '',
-                    deposit: data.deposit ? String(data.deposit) : '',
-                    tailPrice: data.tailPrice ? String(data.tailPrice) : '',
-                    tailDeadline: data.tailDeadline || '',
-                    remark: data.remark || '',
-                    images: [...this.data.images, tempFilePath].slice(0, 9),
-                    isRecognizing: false
-                  })
-                  
-                  wx.showToast({
-                    title: '识别成功，请核对',
-                    icon: 'success'
-                  })
-                } else {
-                  this.setData({ isRecognizing: false })
-                  wx.showToast({
-                    title: aiRes.result?.error || '识别失败',
-                    icon: 'none'
-                  })
-                }
-              },
-              fail: (err) => {
-                wx.hideLoading()
-                this.setData({ isRecognizing: false })
-                console.error('AI 识别失败:', err)
-                wx.showToast({
-                  title: '识别失败，请重试',
-                  icon: 'none'
-                })
-              }
-            })
+        if (apiKey) {
+          // 有 API Key，使用 AI 识别
+          this.doAIRecognition(tempFilePath, apiKey, apiProvider)
+        } else {
+          // 没有 API Key，使用 OCR
+          this.doOCRRecognition(tempFilePath)
+        }
+      }
+    })
+  },
+
+  // AI 识别
+  doAIRecognition(tempFilePath, apiKey, apiProvider) {
+    this.setData({ isRecognizing: true })
+    wx.showLoading({ title: 'AI 识别中...' })
+    
+    // 上传图片到云存储
+    wx.cloud.uploadFile({
+      cloudPath: `ocr/${Date.now()}.png`,
+      filePath: tempFilePath,
+      success: (uploadRes) => {
+        wx.cloud.callFunction({
+          name: 'aiRecognize',
+          data: {
+            imageUrl: uploadRes.fileID,
+            apiKey: apiKey,
+            apiProvider: apiProvider
+          },
+          success: (aiRes) => {
+            wx.hideLoading()
+            console.log('AI 识别结果:', aiRes)
+            
+            if (aiRes.result && aiRes.result.success) {
+              const data = aiRes.result.data
+              this.setData({
+                name: data.name || '',
+                category: data.category || 'guzi',
+                shop: data.shop || '',
+                deposit: data.deposit ? String(data.deposit) : '',
+                tailPrice: data.tailPrice ? String(data.tailPrice) : '',
+                tailDeadline: data.tailDeadline || '',
+                remark: data.remark || '',
+                images: [...this.data.images, tempFilePath].slice(0, 9),
+                isRecognizing: false
+              })
+              wx.showToast({ title: '识别成功，请核对', icon: 'success' })
+            } else {
+              this.setData({ isRecognizing: false })
+              wx.showToast({ title: aiRes.result?.error || '识别失败', icon: 'none' })
+            }
           },
           fail: (err) => {
             wx.hideLoading()
             this.setData({ isRecognizing: false })
-            console.error('图片上传失败:', err)
-            wx.showToast({
-              title: '图片上传失败',
-              icon: 'none'
-            })
+            console.error('AI 识别失败:', err)
+            wx.showToast({ title: '识别失败，请重试', icon: 'none' })
           }
         })
+      },
+      fail: (err) => {
+        wx.hideLoading()
+        this.setData({ isRecognizing: false })
+        wx.showToast({ title: '图片上传失败', icon: 'none' })
       }
     })
+  },
+
+  // OCR 识别（备用方案）
+  doOCRRecognition(tempFilePath) {
+    this.setData({ isRecognizing: true })
+    wx.showLoading({ title: 'OCR 识别中...' })
+    
+    wx.serviceMarket.invokeService({
+      service: 'wx79ac3c8e6304e6d2',
+      api: 'OcrAllInOne',
+      data: {
+        type: 'image',
+        image: { filePath: tempFilePath },
+        ocr_type: 'all_in_one'
+      },
+      success: (res) => {
+        wx.hideLoading()
+        this.parseOCRResult(res.data, tempFilePath)
+      },
+      fail: (err) => {
+        wx.hideLoading()
+        this.setData({ isRecognizing: false })
+        console.error('OCR识别失败:', err)
+        wx.showToast({ title: '识别失败，请重试', icon: 'none' })
+      }
+    })
+  },
+
+  // 解析 OCR 结果
+  parseOCRResult(ocrData, tempFilePath) {
+    const text = ocrData.words_result || []
+    const fullText = text.map(item => item.words).join('')
+    
+    console.log('OCR识别结果:', fullText)
+    
+    let name = this.data.name
+    let deposit = this.data.deposit
+    let tailPrice = this.data.tailPrice
+    let tailDeadline = this.data.tailDeadline
+    let shop = this.data.shop
+    
+    // 提取金额
+    const priceRegex = /(\d+\.?\d*)\s*(元|块|圆)?/g
+    const prices = []
+    let match
+    while ((match = priceRegex.exec(fullText)) !== null) {
+      const price = parseFloat(match[1])
+      if (price > 0 && price < 100000) prices.push(price)
+    }
+    
+    // 提取日期
+    const dateRegex = /(\d{4})[年/-](\d{1,2})[月/-](\d{1,2})/
+    const dateMatch = fullText.match(dateRegex)
+    if (dateMatch) {
+      tailDeadline = `${dateMatch[1]}-${dateMatch[2].padStart(2, '0')}-${dateMatch[3].padStart(2, '0')}`
+    }
+    
+    // 分配金额
+    if (prices.length >= 2) {
+      deposit = prices[0].toString()
+      tailPrice = prices[1].toString()
+    } else if (prices.length === 1) {
+      tailPrice = prices[0].toString()
+    }
+    
+    // 提取名称
+    const lines = fullText.split(/[\n,，]/).filter(l => l.trim())
+    if (lines.length > 0 && !name) {
+      const shortest = lines.reduce((a, b) => a.length < b.length ? a : b)
+      if (shortest.length > 0 && shortest.length < 30) {
+        name = shortest.trim()
+      }
+    }
+    
+    this.setData({
+      name, deposit, tailPrice, tailDeadline, shop,
+      images: [...this.data.images, tempFilePath].slice(0, 9),
+      isRecognizing: false
+    })
+    
+    wx.showToast({ title: '识别完成，请核对', icon: 'success' })
   },
 
   previewImage(e) {

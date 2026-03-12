@@ -1,5 +1,14 @@
 <!--add.wxml-->
 <view class="container">
+  <!-- OCR 识别按钮 -->
+  <view class="ocr-tip" bindtap="recognizeImage" wx:if="{{!isRecognizing}}">
+    <text class="ocr-icon">📷</text>
+    <text>拍照识别订单文字</text>
+  </view>
+  <view class="ocr-tip recognizing" wx:else>
+    <text>🔄 识别中...</text>
+  </view>
+
   <view class="form-group">
     <view class="form-label">商品名称 *</view>
     <input 

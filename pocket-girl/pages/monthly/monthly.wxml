@@ -1,0 +1,123 @@
+<!--monthly.wxml-->
+<view class="container">
+  <!-- 月份选择器 -->
+  <view class="month-selector">
+    <picker 
+      mode="selector" 
+      range="{{months}}" 
+      range-key="label"
+      bindchange="onMonthChange"
+      value="{{selectedMonth}}">
+      <view class="month-picker">
+        <text class="month-label">{{months[currentMonth-1] || months[0].label}}</text>
+        <text class="arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 统计概览 -->
+  <view class="stats-overview" wx:if="{{monthData}}">
+    <view class="overview-card">
+      <text class="overview-label">待付尾款</text>
+      <text class="overview-value highlight">¥{{monthData.unpaidTail}}</text>
+    </view>
+    <view class="overview-card">
+      <text class="overview-label">已付尾款</text>
+      <text class="overview-value success">¥{{monthData.paidTail}}</text>
+    </view>
+  </view>
+
+  <!-- 支出统计 -->
+  <view class="section" wx:if="{{monthData}}">
+    <view class="section-title">💰 支出统计</view>
+    <view class="stats-grid">
+      <view class="stat-item">
+        <text class="stat-label">项目总数</text>
+        <text class="stat-value">{{monthData.totalRecords}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">待支付</text>
+        <text class="stat-value highlight">{{monthData.unpaidRecords}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">已支付</text>
+        <text class="stat-value success">{{monthData.paidRecords}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">尾款总额</text>
+        <text class="stat-value">¥{{monthData.totalTail}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">定金总额</text>
+        <text class="stat-value">¥{{monthData.depositTotal}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">本月总支出</text>
+        <text class="stat-value highlight">¥{{monthData.paidTail + monthData.paidDeposit}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类统计 -->
+  <view class="section" wx:if="{{monthData}}">
+    <view class="section-title">📊 分类统计</view>
+    <view class="category-stats">
+      <block wx:for="{{categories}}" wx:key="*this">
+        <view class="category-item" wx:if="{{monthData.categoryStats[item].count > 0}}">
+          <view class="category-header">
+            <text class="category-name">
+              {{item === 'guzi' ? '🎁 谷子' : item === 'hanfu' ? '🏮 汉服' : item === 'lo' ? '👗 Lo裙' : '📦 其他'}}
+            </text>
+            <text class="category-count">{{monthData.categoryStats[item].count}}个</text>
+          </view>
+          <view class="category-progress">
+            <view class="progress-bar">
+              <view 
+                class="progress-fill" 
+                style="width: {{monthData.categoryStats[item].paid / monthData.categoryStats[item].total * 100}}%"
+              ></view>
+            </view>
+            <text class="category-amount">¥{{monthData.categoryStats[item].total}}</text>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 每日待付清单 -->
+  <view class="section" wx:if="{{monthData && monthData.unpaidRecords > 0}}">
+    <view class="section-title">📅 待付日程</view>
+    <view class="daily-list">
+      <block wx:for="{{monthData.dailyData}}" wx:key="*this">
+        <view class="daily-item" wx:if="{{item.records[0].isPaid === false}}">
+          <view class="daily-date">{{item.records[0].tailDeadline}}</view>
+          <view class="daily-records">
+            <block wx:for="{{item.records}}" wx:for-item="record" wx:key="id">
+              <view 
+                class="record-item" 
+                bindtap="goToDetail" 
+                data-id="{{record.id}}"
+                wx:if="{{!record.isPaid}}">
+                <view class="record-info">
+                  <text class="record-name">{{record.name}}</text>
+                  <text class="record-category">
+                    {{record.category === 'guzi' ? '🎁' : record.category === 'hanfu' ? '🏮' : record.category === 'lo' ? '👗' : '📦'}}
+                  </text>
+                </view>
+                <view class="record-amount">
+                  <text>¥{{record.tailPrice}}</text>
+                  <text class="mark-paid" catchtap="markAsPaid" data-id="{{record.id}}">✓</text>
+                </view>
+              </view>
+            </block>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!monthData || monthData.totalRecords === 0}}">
+    <text>📭 该月暂无尾款记录</text>
+  </view>
+</view>

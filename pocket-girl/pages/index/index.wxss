@@ -12,7 +12,12 @@
   color: #333;
 }
 
-.settings-icon {
+.header-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+.settings-icon, .monthly-icon {
   font-size: 40rpx;
   padding: 8rpx;
 }

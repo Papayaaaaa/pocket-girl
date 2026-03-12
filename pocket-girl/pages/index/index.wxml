@@ -3,7 +3,10 @@
   <!-- 设置按钮 -->
   <view class="header-bar">
     <view class="header-title">尾款助手</view>
-    <view class="settings-icon" bindtap="goToSettings">⚙️</view>
+    <view class="header-actions">
+      <view class="monthly-icon" bindtap="goToMonthly">📊</view>
+      <view class="settings-icon" bindtap="goToSettings">⚙️</view>
+    </view>
   </view>
 
   <!-- 筛选栏 -->

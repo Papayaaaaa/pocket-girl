@@ -79,5 +79,11 @@ Page({
     wx.navigateTo({
       url: '/pages/settings/settings'
     })
+  },
+
+  goToMonthly() {
+    wx.navigateTo({
+      url: '/pages/monthly/monthly'
+    })
   }
 })

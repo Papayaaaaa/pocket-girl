@@ -4,6 +4,7 @@
     "pages/add/add",
     "pages/detail/detail",
     "pages/stats/stats",
+    "pages/monthly/monthly",
     "pages/settings/settings"
   ],
   "window": {

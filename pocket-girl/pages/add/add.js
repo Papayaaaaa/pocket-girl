@@ -51,8 +51,8 @@ Page({
     })
   },
 
-  // OCR 识别文字
-  recognizeImage() {
+  // AI 智能识别
+  recognizeWithAI() {
     if (this.data.isRecognizing) return
     
     wx.chooseMedia({
@@ -62,102 +62,71 @@ Page({
       success: (res) => {
         const tempFilePath = res.tempFiles[0].tempFilePath
         this.setData({ isRecognizing: true })
-        wx.showLoading({ title: '识别中...' })
+        wx.showLoading({ title: 'AI 识别中...' })
         
-        // 调用微信 OCR API
-        wx.serviceMarket.invokeService({
-          service: 'wx79ac3c8e6304e6d2',
-          api: 'OcrAllInOne',
-          data: {
-            type: 'image',
-            image: {
-              filePath: tempFilePath
-            },
-            ocr_type: 'all_in_one'
-          },
-          success: (res) => {
-            wx.hideLoading()
-            this.parseOCRResult(res.data)
+        // 先上传图片到云存储
+        wx.cloud.uploadFile({
+          cloudPath: `ocr/${Date.now()}.png`,
+          filePath: tempFilePath,
+          success: (uploadRes) => {
+            // 调用云函数进行 AI 识别
+            wx.cloud.callFunction({
+              name: 'aiRecognize',
+              data: {
+                imageUrl: uploadRes.fileID
+              },
+              success: (aiRes) => {
+                wx.hideLoading()
+                console.log('AI 识别结果:', aiRes)
+                
+                if (aiRes.result && aiRes.result.success) {
+                  const data = aiRes.result.data
+                  this.setData({
+                    name: data.name || '',
+                    category: data.category || 'guzi',
+                    shop: data.shop || '',
+                    deposit: data.deposit ? String(data.deposit) : '',
+                    tailPrice: data.tailPrice ? String(data.tailPrice) : '',
+                    tailDeadline: data.tailDeadline || '',
+                    remark: data.remark || '',
+                    images: [...this.data.images, tempFilePath].slice(0, 9),
+                    isRecognizing: false
+                  })
+                  
+                  wx.showToast({
+                    title: '识别成功，请核对',
+                    icon: 'success'
+                  })
+                } else {
+                  this.setData({ isRecognizing: false })
+                  wx.showToast({
+                    title: aiRes.result?.error || '识别失败',
+                    icon: 'none'
+                  })
+                }
+              },
+              fail: (err) => {
+                wx.hideLoading()
+                this.setData({ isRecognizing: false })
+                console.error('AI 识别失败:', err)
+                wx.showToast({
+                  title: '识别失败，请重试',
+                  icon: 'none'
+                })
+              }
+            })
           },
           fail: (err) => {
             wx.hideLoading()
             this.setData({ isRecognizing: false })
-            console.error('OCR识别失败:', err)
+            console.error('图片上传失败:', err)
             wx.showToast({
-              title: '识别失败，请重试',
+              title: '图片上传失败',
               icon: 'none'
             })
           }
         })
       }
-    })
-  },
-
-  // 解析 OCR 结果并填充表单
-  parseOCRResult(ocrData) {
-    const text = ocrData.words_result || []
-    const fullText = text.map(item => item.words).join('')
-    
-    console.log('OCR识别结果:', fullText)
-    
-    // 尝试提取信息
-    let name = this.data.name
-    let deposit = this.data.deposit
-    let tailPrice = this.data.tailPrice
-    let tailDeadline = this.data.tailDeadline
-    let shop = this.data.shop
-    
-    // 提取金额（查找价格相关词汇后面的数字）
-    const priceRegex = /(\d+\.?\d*)\s*(元|块|圆)?/g
-    const prices = []
-    let match
-    while ((match = priceRegex.exec(fullText)) !== null) {
-      const price = parseFloat(match[1])
-      if (price > 0 && price < 100000) {
-        prices.push(price)
-      }
-    }
-    
-    // 提取日期
-    const dateRegex = /(\d{4})[年/-](\d{1,2})[月/-](\d{1,2})/
-    const dateMatch = fullText.match(dateRegex)
-    if (dateMatch) {
-      tailDeadline = `${dateMatch[1]}-${dateMatch[2].padStart(2, '0')}-${dateMatch[3].padStart(2, '0')}`
-    }
-    
-    // 提取金额到定金和尾款
-    if (prices.length >= 2) {
-      // 假设第一个是定金，第二个是尾款
-      deposit = prices[0].toString()
-      tailPrice = prices[1].toString()
-    } else if (prices.length === 1) {
-      // 只有一个金额，设为尾款
-      tailPrice = prices[0].toString()
-    }
-    
-    // 尝试提取商品名称（取前面较短的文本）
-    const lines = fullText.split(/[\n,，]/).filter(l => l.trim())
-    if (lines.length > 0 && !name) {
-      // 找最短的那行作为名称
-      const shortest = lines.reduce((a, b) => a.length < b.length ? a : b)
-      if (shortest.length > 0 && shortest.length < 30) {
-        name = shortest.trim()
-      }
-    }
-    
-    // 更新数据
-    this.setData({
-      name,
-      deposit,
-      tailPrice,
-      tailDeadline,
-      shop,
-      isRecognizing: false
-    })
-    
-    wx.showToast({
-      title: '识别完成，请核对',
-      icon: 'success'
     })
   },
 

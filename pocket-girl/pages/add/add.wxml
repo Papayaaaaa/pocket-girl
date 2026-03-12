@@ -1,9 +1,9 @@
 <!--add.wxml-->
 <view class="container">
-  <!-- OCR 识别按钮 -->
-  <view class="ocr-tip" bindtap="recognizeImage" wx:if="{{!isRecognizing}}">
-    <text class="ocr-icon">📷</text>
-    <text>拍照识别订单文字</text>
+  <!-- AI 智能识别按钮 -->
+  <view class="ocr-tip" bindtap="recognizeWithAI" wx:if="{{!isRecognizing}}">
+    <text class="ocr-icon">🤖</text>
+    <text>AI 智能识别截图</text>
   </view>
   <view class="ocr-tip recognizing" wx:else>
     <text>🔄 识别中...</text>

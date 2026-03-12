@@ -2,6 +2,7 @@
 // 需要配置微信服务号模板消息
 
 const cloud = require('wx-server-sdk')
+const axios = require('axios')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
 // 模板消息配置
@@ -43,11 +44,10 @@ exports.main = async (event, context) => {
     // 需要先调用微信统一接口获取 access_token
     const accessToken = await getAccessToken()
 
-    const sendResults = await Promise.all(records.data.map(record => {
-      return cloud.fetch({
-        url: `https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=${accessToken}`,
-        method: 'POST',
-        data: {
+    const sendResults = await Promise.all(records.data.map(async record => {
+      const response = await axios.post(
+        `https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=${accessToken}`,
+        {
           touser: OPENID,
           template_id: TEMPLATE_ID,
           data: {
@@ -73,7 +73,8 @@ exports.main = async (event, context) => {
             }
           }
         }
-      })
+      )
+      return response.data
     }))
 
     return {
@@ -93,10 +94,9 @@ async function getAccessToken() {
   const appSecret = 'YOUR_APPSECRET' // 服务号 AppSecret
 
   // 实际生产中应该缓存 access_token
-  const res = await cloud.fetch({
-    url: `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${appId}&secret=${appSecret}`,
-    method: 'GET'
-  })
+  const res = await axios.get(
+    `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${appId}&secret=${appSecret}`
+  )
 
   if (!res.data || !res.data.access_token) {
     throw new Error('获取 access_token 失败')

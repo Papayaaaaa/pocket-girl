@@ -19,21 +19,21 @@
 
   <!-- 消费概览 -->
   <view class="overview-section">
-    <view class="overview-card">
+    <view class="overview-card paid-card">
       <view class="overview-header">
         <text class="overview-icon">✅</text>
-        <text class="overview-label">已支付</text>
+        <text class="overview-label">已支付（含定金）</text>
       </view>
-      <text class="overview-amount paid">¥{{overview.pastPaid}}</text>
-      <text class="overview-desc">{{overview.paidCount}} 笔已完成</text>
+      <text class="overview-amount paid">¥{{overview.totalPaid}}</text>
+      <text class="overview-desc">其中定金 ¥{{overview.depositPaid}}，{{overview.paidCount}} 笔</text>
     </view>
     
-    <view class="overview-card">
+    <view class="overview-card pending-card">
       <view class="overview-header">
         <text class="overview-icon">📅</text>
-        <text class="overview-label">待支付</text>
+        <text class="overview-label">待支付（尾款）</text>
       </view>
-      <text class="overview-amount pending">¥{{overview.futurePending}}</text>
+      <text class="overview-amount pending">¥{{overview.totalPending}}</text>
       <text class="overview-desc">{{overview.pendingCount}} 笔预计</text>
     </view>
   </view>

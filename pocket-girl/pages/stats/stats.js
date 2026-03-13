@@ -1,14 +1,15 @@
 // stats.js
 Page({
   data: {
-    currentPeriod: 'year', // 'month', 'half', 'year'
+    currentPeriod: 'year',
     periodLabel: '年度',
     selectedYear: 2026,
     years: [],
     // 概览数据
     overview: {
-      pastPaid: 0,      // 过去已支付
-      futurePending: 0,  // 未来待支付
+      totalPaid: 0,      // 已支付总额（定金+尾款）
+      totalPending: 0,   // 待支付总额（尾款）
+      depositPaid: 0,     // 已付定金
       pendingCount: 0,
       paidCount: 0
     },
@@ -63,17 +64,17 @@ Page({
     
     // 按月统计
     const monthlyData = []
-    let pastPaid = 0
-    let futurePending = 0
+    let totalPaid = 0
+    let totalPending = 0
+    let depositPaid = 0
     let pendingCount = 0
     let paidCount = 0
     
     for (let month = 0; month < 12; month++) {
       const monthStart = new Date(year, month, 1)
       const monthEnd = new Date(year, month + 1, 0)
-      const isPast = monthEnd < today
-      const isCurrent = monthStart <= today && monthEnd >= today
       
+      // 该月的所有记录（按尾款截止日）
       const monthRecords = records.filter(r => {
         if (!r.tailDeadline) return false
         const deadline = new Date(r.tailDeadline)
@@ -82,23 +83,32 @@ Page({
       
       let paid = 0
       let pending = 0
+      let deposit = 0
       
       monthRecords.forEach(r => {
-        const amount = (r.tailPrice || 0) + (r.deposit || 0)
+        const tailPrice = r.tailPrice || 0
+        const depositAmt = r.deposit || 0
+        const total = tailPrice + depositAmt
+        
         if (r.isPaid) {
-          paid += amount
+          paid += total
+          deposit += depositAmt
           paidCount++
         } else {
-          pending += amount
+          pending += tailPrice  // 未支付只算尾款
           pendingCount++
         }
       })
       
-      // 过去的月份统计已支付，未来的统计待支付
+      // 判断是过去还是未来
+      const isPast = monthEnd < today
+      const isCurrent = monthStart <= today && monthEnd >= today
+      
       if (isPast) {
-        pastPaid += paid
+        totalPaid += paid
+        depositPaid += deposit
       } else {
-        futurePending += pending
+        totalPending += pending
       }
       
       monthlyData.push({
@@ -112,30 +122,6 @@ Page({
         count: monthRecords.length
       })
     }
-    
-    // 根据周期筛选数据
-    let filteredData = monthlyData
-    if (this.data.currentPeriod === 'month') {
-      // 当月
-      const currentMonth = now.getMonth()
-      filteredData = [monthlyData[currentMonth]]
-    } else if (this.data.currentPeriod === 'half') {
-      // 半年：当前半年
-      const currentMonth = now.getMonth()
-      if (currentMonth < 6) {
-        filteredData = monthlyData.slice(0, 6)
-      } else {
-        filteredData = monthlyData.slice(6, 12)
-      }
-    }
-    
-    // 计算筛选后的统计
-    let periodPaid = 0
-    let periodPending = 0
-    filteredData.forEach(m => {
-      periodPaid += parseFloat(m.paid)
-      periodPending += parseFloat(m.pending)
-    })
     
     // 分类统计（当年所有）
     const categoryMap = {
@@ -191,15 +177,11 @@ Page({
 
     this.setData({
       overview: {
-        pastPaid: pastPaid.toFixed(2),
-        futurePending: futurePending.toFixed(2),
+        totalPaid: totalPaid.toFixed(2),
+        totalPending: totalPending.toFixed(2),
+        depositPaid: depositPaid.toFixed(2),
         pendingCount,
         paidCount
-      },
-      periodStats: {
-        paid: periodPaid.toFixed(2),
-        pending: periodPending.toFixed(2),
-        total: (periodPaid + periodPending).toFixed(2)
       },
       monthlyData,
       categoryStats,

@@ -1,7 +1,7 @@
-/* yearly.wxss */
+/* yearly.wxss - Apple Style */
 .container {
-  padding: 24rpx;
-  background: #F5F5F5;
+  padding: 16rpx;
+  background: #F2F2F7;
   min-height: 100vh;
 }
 
@@ -9,49 +9,50 @@
 .year-picker {
   display: flex;
   justify-content: center;
-  margin-bottom: 24rpx;
+  margin-bottom: 20rpx;
 }
 
 .year-btn {
   display: flex;
   align-items: center;
-  background: #fff;
+  background: #FFFFFF;
   padding: 16rpx 32rpx;
-  border-radius: 30rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
+  border-radius: 24rpx;
+  box-shadow: 0 1rpx 3rpx rgba(0,0,0,0.1);
 }
 
 .year-icon {
   font-size: 24rpx;
-  color: #999;
+  color: #8E8E93;
 }
 
 .year-text {
   font-size: 32rpx;
   font-weight: 600;
-  color: #333;
+  color: #3C3C43;
   margin: 0 20rpx;
 }
 
 /* 年度汇总 */
 .year-overview {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 24rpx;
-  padding: 32rpx;
-  margin-bottom: 24rpx;
+  background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,122,255,0.3);
 }
 
 .overview-title {
   font-size: 26rpx;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.85);
   margin-bottom: 12rpx;
 }
 
 .overview-amount {
-  font-size: 60rpx;
+  font-size: 56rpx;
   font-weight: 700;
-  color: #fff;
-  margin-bottom: 24rpx;
+  color: #FFFFFF;
+  margin-bottom: 20rpx;
 }
 
 .overview-detail {
@@ -74,7 +75,7 @@
 .detail-value {
   font-size: 30rpx;
   font-weight: 600;
-  color: #fff;
+  color: #FFFFFF;
 }
 
 .detail-value.paid {
@@ -87,24 +88,25 @@
 
 /* 通用卡片 */
 .card {
-  background: #fff;
+  background: #FFFFFF;
   border-radius: 16rpx;
-  padding: 24rpx;
-  margin-bottom: 24rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 1rpx 3rpx rgba(0,0,0,0.1);
 }
 
 .section-title {
-  font-size: 30rpx;
+  font-size: 28rpx;
   font-weight: 600;
   margin-bottom: 20rpx;
-  color: #333;
+  color: #3C3C43;
 }
 
 /* 月度趋势 */
 .monthly-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16rpx;
+  gap: 12rpx;
 }
 
 .month-item {
@@ -112,33 +114,33 @@
   flex-direction: column;
   align-items: center;
   padding: 16rpx 8rpx;
-  background: #F8F9FA;
+  background: #F2F2F7;
   border-radius: 12rpx;
 }
 
 .month-label {
   font-size: 22rpx;
-  color: #666;
-  margin-bottom: 8rpx;
+  color: #8E8E93;
+  margin-bottom: 6rpx;
 }
 
 .month-amount {
   font-size: 24rpx;
   font-weight: 600;
-  color: #333;
+  color: #3C3C43;
   margin-bottom: 4rpx;
 }
 
 .month-count {
   font-size: 20rpx;
-  color: #999;
+  color: #8E8E93;
 }
 
 /* 分类统计 */
 .category-list {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 20rpx;
 }
 
 .category-item {
@@ -161,7 +163,7 @@
 
 .category-name {
   font-size: 26rpx;
-  color: #333;
+  color: #3C3C43;
   flex: 1;
 }
 
@@ -174,17 +176,17 @@
 .category-amount {
   font-size: 28rpx;
   font-weight: 600;
-  color: #333;
+  color: #3C3C43;
 }
 
 .category-percent {
   font-size: 24rpx;
-  color: #999;
+  color: #8E8E93;
 }
 
 .category-bar {
   height: 12rpx;
-  background: #F0F0F0;
+  background: #F2F2F7;
   border-radius: 6rpx;
   overflow: hidden;
 }
@@ -199,6 +201,6 @@
 .empty-state {
   text-align: center;
   padding: 40rpx;
-  color: #999;
+  color: #8E8E93;
   font-size: 26rpx;
 }

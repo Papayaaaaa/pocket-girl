@@ -1,43 +1,35 @@
-/* settings.wxss */
+/* settings.wxss - Apple Style */
 .container {
-  padding: 24rpx;
-  background: #F8F9FA;
+  padding: 16rpx;
+  background: #F2F2F7;
   min-height: 100vh;
   padding-bottom: 100rpx;
 }
 
 .section {
-  background: #fff;
-  border-radius: 20rpx;
-  padding: 28rpx;
+  background: #FFFFFF;
+  border-radius: 16rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  box-shadow: 0 1rpx 3rpx rgba(0,0,0,0.1);
 }
 
 .section-title {
-  font-size: 28rpx;
+  font-size: 26rpx;
   font-weight: 600;
-  margin-bottom: 20rpx;
-  color: #333;
+  padding: 20rpx 24rpx;
+  color: #3C3C43;
+  background: #F2F2F7;
   display: flex;
   align-items: center;
-}
-
-.section-title::before {
-  content: '';
-  width: 6rpx;
-  height: 28rpx;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 3rpx;
-  margin-right: 12rpx;
 }
 
 .setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20rpx 0;
-  border-bottom: 1rpx solid #F5F5F7;
+  padding: 20rpx 24rpx;
+  border-bottom: 1rpx solid #E5E5EA;
 }
 
 .setting-item:last-child {
@@ -50,31 +42,29 @@
 
 .setting-label {
   font-size: 28rpx;
-  color: #333;
+  color: #3C3C43;
   display: block;
-  margin-bottom: 6rpx;
-  font-weight: 500;
+  margin-bottom: 4rpx;
 }
 
 .setting-desc {
   font-size: 24rpx;
-  color: #999;
+  color: #8E8E93;
 }
 
 .picker-value {
   font-size: 28rpx;
-  color: #667eea;
-  font-weight: 500;
-  background: #F5F5F7;
+  color: #007AFF;
+  background: #F2F2F7;
   padding: 12rpx 20rpx;
-  border-radius: 12rpx;
+  border-radius: 10rpx;
 }
 
 /* 自定义提醒日期 */
 .remind-days-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 16rpx;
+  gap: 12rpx;
   margin-top: 16rpx;
 }
 
@@ -82,45 +72,46 @@
   padding: 12rpx 24rpx;
   border-radius: 20rpx;
   font-size: 26rpx;
-  background: #F5F5F7;
-  color: #666;
+  background: #F2F2F7;
+  color: #3C3C43;
   transition: all 0.2s;
 }
 
 .remind-day-item.active {
-  background: #07C160;
-  color: #fff;
+  background: #007AFF;
+  color: #FFFFFF;
 }
 
 .remind-days-tip {
   font-size: 24rpx;
-  color: #07C160;
+  color: #007AFF;
   margin-top: 16rpx;
 }
 
 .bind-tip {
   font-size: 24rpx;
-  color: #888;
-  margin-bottom: 20rpx;
+  color: #8E8E93;
+  margin-bottom: 16rpx;
   line-height: 1.6;
-  background: #F8F9FA;
+  background: #F2F2F7;
   padding: 16rpx 20rpx;
-  border-radius: 12rpx;
+  border-radius: 10rpx;
 }
 
 .bind-success {
-  color: #52C41A;
+  color: #34C759;
 }
 
 .btn {
   width: 100%;
   padding: 24rpx 0;
-  border-radius: 14rpx;
+  border-radius: 12rpx;
   font-size: 30rpx;
   text-align: center;
   font-weight: 500;
   transition: all 0.3s ease;
   margin-bottom: 16rpx;
+  border: none;
 }
 
 .btn:last-child {
@@ -128,42 +119,42 @@
 }
 
 .bind-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.4);
+  background: #007AFF;
+  color: #FFFFFF;
+  box-shadow: 0 4rpx 16rpx rgba(0,122,255,0.3);
 }
 
 .test-btn {
-  background: linear-gradient(135deg, #f5f5f7 0%, #e8e8e8 100%);
-  color: #333;
+  background: #F2F2F7;
+  color: #007AFF;
 }
 
 .test-btn[disabled] {
-  color: #AAA;
-  background: #F5F5F7;
+  color: #C7C7CC;
+  background: #F2F2F7;
 }
 
 /* 数据管理 */
 .data-btns {
   display: flex;
   gap: 16rpx;
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
 }
 
 .data-btn {
   flex: 1;
-  background: #F5F5F7;
-  color: #333;
+  background: #F2F2F7;
+  color: #007AFF;
 }
 
 .danger-zone {
-  border-top: 1rpx solid #FFEBEB;
-  padding-top: 20rpx;
+  border-top: 16rpx solid #F2F2F7;
+  padding-top: 16rpx;
 }
 
 .danger-btn {
-  background: #FFF0F0;
-  color: #FF6B6B;
+  background: #FFF2F0;
+  color: #FF3B30;
 }
 
 /* 关于 */
@@ -175,7 +166,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #999;
+  color: #8E8E93;
   font-size: 26rpx;
 }
 
@@ -192,15 +183,14 @@
 
 .api-input {
   width: 100%;
-  background: #F8F9FA;
-  border-radius: 14rpx;
-  padding: 22rpx;
+  background: #F2F2F7;
+  border-radius: 10rpx;
+  padding: 20rpx;
   font-size: 28rpx;
-  margin-top: 14rpx;
-  border: 2rpx solid #F0F0F0;
-  transition: border-color 0.3s ease;
+  margin-top: 12rpx;
+  border: 1rpx solid #E5E5EA;
 }
 
 .api-input:focus {
-  border-color: #667eea;
+  border-color: #007AFF;
 }

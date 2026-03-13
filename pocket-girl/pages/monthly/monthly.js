@@ -6,12 +6,14 @@ Page({
     months: [],
     selectedMonth: '',
     monthData: null,
-    categories: ['guzi', 'hanfu', 'lo', 'other'],
-    categoryNames: {
-      'guzi': '谷子',
-      'hanfu': '汉服',
-      'lo': 'Lo裙',
-      'other': '其他'
+    categoryStats: [],
+    upcomingList: [],
+    upcomingDays: 30,
+    categoryMap: {
+      'guzi': { name: '谷子', color: '#FF6B9D', icon: '🎁' },
+      'hanfu': { name: '汉服', color: '#52C41A', icon: '🏮' },
+      'lo': { name: 'Lo裙', color: '#FF9500', icon: '👗' },
+      'other': { name: '其他', color: '#8C8C8C', icon: '📦' }
     }
   },
 
@@ -20,16 +22,18 @@ Page({
     let year = now.getFullYear()
     let month = now.getMonth() + 1
     
-    // 如果有传入参数
     if (options.year && options.month) {
       year = parseInt(options.year)
       month = parseInt(options.month)
     }
     
-    // 生成最近1个月+未来11个月的选项（共12个月）
+    this.initMonths(year, month)
+  },
+
+  initMonths(year, month) {
     const months = []
-    // 过去1个月
-    for (let i = 0; i < 1; i++) {
+    // 过去3个月
+    for (let i = 2; i >= 0; i--) {
       const d = new Date(year, month - 1 - i, 1)
       const y = d.getFullYear()
       const m = d.getMonth() + 1
@@ -38,8 +42,8 @@ Page({
         label: `${y}年${m}月`
       })
     }
-    // 未来11个月
-    for (let i = 1; i <= 11; i++) {
+    // 未来9个月
+    for (let i = 1; i <= 9; i++) {
       const d = new Date(year, month - 1 + i, 1)
       const y = d.getFullYear()
       const m = d.getMonth() + 1
@@ -71,96 +75,119 @@ Page({
     const selectedMonth = this.data.selectedMonth
     const [year, month] = selectedMonth.split('-').map(Number)
     
-    // 获取该月的起始和结束日期
     const startDate = new Date(year, month - 1, 1)
-    const endDate = new Date(year, month, 0) // 该月最后一天
+    const endDate = new Date(year, month, 0)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
     
-    // 筛选该月的尾款记录
+    // 筛选该月的尾款记录（按截止日期）
     const monthRecords = records.filter(r => {
       if (!r.tailDeadline) return false
       const deadline = new Date(r.tailDeadline)
       return deadline >= startDate && deadline <= endDate
     })
     
-    // 按状态分类
-    const paidRecords = monthRecords.filter(r => r.isPaid)
-    const unpaidRecords = monthRecords.filter(r => !r.isPaid)
-    
-    // 计算金额
+    // 统计
     let totalTail = 0
     let paidTail = 0
     let unpaidTail = 0
     let depositTotal = 0
     let paidDeposit = 0
+    let paidRecords = 0
+    let unpaidRecords = 0
     
     monthRecords.forEach(r => {
-      totalTail += r.tailPrice || 0
-      depositTotal += r.deposit || 0
-    })
-    
-    paidRecords.forEach(r => {
-      paidTail += r.tailPrice || 0
-      paidDeposit += r.deposit || 0
-    })
-    
-    unpaidTail = totalTail - paidTail
-    
-    // 按分类统计
-    const categoryStats = {}
-    this.data.categories.forEach(cat => {
-      const catRecords = monthRecords.filter(r => r.category === cat)
-      const catPaid = catRecords.filter(r => r.isPaid)
-      categoryStats[cat] = {
-        count: catRecords.length,
-        paidCount: catPaid.length,
-        total: catRecords.reduce((sum, r) => sum + (r.tailPrice || 0) + (r.deposit || 0), 0),
-        paid: catPaid.reduce((sum, r) => sum + (r.tailPrice || 0) + (r.deposit || 0), 0)
-      }
-    })
-    
-    // 按日期统计（用于日历视图）
-    const dailyData = {}
-    monthRecords.forEach(r => {
-      const day = r.tailDeadline
-      if (!dailyData[day]) {
-        dailyData[day] = {
-          records: [],
-          total: 0,
-          paid: 0
-        }
-      }
-      dailyData[day].records.push(r)
-      dailyData[day].total += (r.tailPrice || 0) + (r.deposit || 0)
+      const tailPrice = r.tailPrice || 0
+      const deposit = r.deposit || 0
+      totalTail += tailPrice
+      depositTotal += deposit
+      
       if (r.isPaid) {
-        dailyData[day].paid += (r.tailPrice || 0) + (r.deposit || 0)
+        paidTail += tailPrice
+        paidDeposit += deposit
+        paidRecords++
+      } else {
+        unpaidTail += tailPrice
+        unpaidRecords++
       }
     })
+    
+    // 分类统计
+    const categoryAmounts = {}
+    const categoryCounts = {}
+    monthRecords.forEach(r => {
+      const amount = (r.tailPrice || 0) + (r.deposit || 0)
+      if (!categoryAmounts[r.category]) {
+        categoryAmounts[r.category] = 0
+        categoryCounts[r.category] = 0
+      }
+      categoryAmounts[r.category] += amount
+      categoryCounts[r.category]++
+    })
+    
+    const total = totalTail + depositTotal
+    const categoryStats = Object.entries(categoryAmounts)
+      .map(([category, amount]) => ({
+        category,
+        name: this.data.categoryMap[category]?.name || '其他',
+        color: this.data.categoryMap[category]?.color || '#8C8C8C',
+        icon: this.data.categoryMap[category]?.icon || '📦',
+        amount: amount.toFixed(2),
+        count: categoryCounts[category] || 0,
+        percent: total > 0 ? (amount / total * 100).toFixed(1) : 0
+      }))
+      .sort((a, b) => b.amount - a.amount)
+    
+    // 未来待付日程（该月未支付的 + 未来30天内的）
+    const thirtyDaysLater = new Date()
+    thirtyDaysLater.setDate(thirtyDaysLater.getDate() + this.data.upcomingDays)
+    
+    const upcomingList = records
+      .filter(r => {
+        if (r.isPaid || !r.tailDeadline) return false
+        const deadline = new Date(r.tailDeadline)
+        // 未来30天内的，或者该月未支付的
+        return (deadline >= today && deadline <= thirtyDaysLater) || (deadline.getMonth() === month - 1 && deadline.getFullYear() === year)
+      })
+      .sort((a, b) => new Date(a.tailDeadline) - new Date(b.tailDeadline))
+      .slice(0, 10)
+      .map(r => {
+        const deadline = new Date(r.tailDeadline)
+        const daysLeft = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24))
+        let daysLeftText = ''
+        if (daysLeft < 0) daysLeftText = '已逾期'
+        else if (daysLeft === 0) daysLeftText = '今天'
+        else if (daysLeft === 1) daysLeftText = '明天'
+        else daysLeftText = `${daysLeft}天后`
+        
+        return {
+          ...r,
+          daysLeft,
+          daysLeftText
+        }
+      })
     
     this.setData({
       monthData: {
         totalRecords: monthRecords.length,
-        paidRecords: paidRecords.length,
-        unpaidRecords: unpaidRecords.length,
+        paidRecords,
+        unpaidRecords,
         totalTail,
         paidTail,
         unpaidTail,
         depositTotal,
-        paidDeposit,
-        categoryStats,
-        dailyData
-      }
+        paidDeposit
+      },
+      categoryStats,
+      upcomingList
     })
   },
 
-  // 查看详情
   goToDetail(e) {
     const id = e.currentTarget.dataset.id
-    wx.navigateTo({
-      url: `/pages/detail/detail?id=${id}`
-    })
+    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` })
   },
 
-  // 标记已支付
   markAsPaid(e) {
     const id = e.currentTarget.dataset.id
     const records = wx.getStorageSync('records') || []
@@ -171,7 +198,7 @@ Page({
       records[index].paidAt = Date.now()
       wx.setStorageSync('records', records)
       
-      wx.showToast({ title: '已标记支付', icon: 'success' })
+      wx.showToast({ title: '已支付', icon: 'success' })
       this.loadMonthData()
     }
   }

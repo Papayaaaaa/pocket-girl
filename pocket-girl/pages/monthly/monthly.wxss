@@ -1,243 +1,280 @@
-/* monthly.wxss */
+/* monthly.wxss - Apple Style */
 .container {
-  padding: 32rpx;
+  min-height: 100vh;
+  background: #F2F2F7;
+  padding: 16rpx;
 }
 
+/* 月份选择器 */
 .month-selector {
-  margin-bottom: 32rpx;
+  margin-bottom: 20rpx;
 }
 
 .month-picker {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12rpx;
-  background: #fff;
-  padding: 24rpx;
+  background: #FFFFFF;
   border-radius: 12rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
+  padding: 20rpx;
+  box-shadow: 0 1rpx 3rpx rgba(0,0,0,0.1);
 }
 
 .month-label {
   font-size: 32rpx;
   font-weight: 600;
-  color: #333;
+  color: #000;
 }
 
 .arrow {
-  font-size: 24rpx;
-  color: #999;
+  margin-left: 12rpx;
+  color: #8E8E93;
+  font-size: 28rpx;
 }
 
-.stats-overview {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24rpx;
-  margin-bottom: 32rpx;
+/* 概览卡片 */
+.overview-section {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
 }
 
 .overview-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 32rpx;
+  flex: 1;
+  background: #FFFFFF;
   border-radius: 16rpx;
-  color: #fff;
+  padding: 24rpx;
+  box-shadow: 0 1rpx 3rpx rgba(0,0,0,0.1);
 }
 
-.overview-card:last-child {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-}
-
-.overview-label {
-  font-size: 24rpx;
-  opacity: 0.9;
-  display: block;
-  margin-bottom: 8rpx;
-}
-
-.overview-value {
-  font-size: 40rpx;
-  font-weight: 700;
-}
-
-.overview-value.success {
-  color: #fff;
-}
-
-.section {
-  background: #fff;
-  border-radius: 16rpx;
-  padding: 32rpx;
-  margin-bottom: 24rpx;
-}
-
-.section-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  margin-bottom: 24rpx;
-  color: #333;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24rpx;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-label {
-  font-size: 22rpx;
-  color: #999;
-  display: block;
-  margin-bottom: 8rpx;
-}
-
-.stat-value {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #333;
-}
-
-.stat-value.highlight {
-  color: #FF6B6B;
-}
-
-.stat-value.success {
-  color: #07C160;
-}
-
-.category-stats {
+.overview-header {
   display: flex;
-  flex-direction: column;
-  gap: 24rpx;
-}
-
-.category-item {
-  padding: 20rpx;
-  background: #F9F9F9;
-  border-radius: 12rpx;
-}
-
-.category-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-bottom: 12rpx;
 }
 
+.overview-icon {
+  font-size: 32rpx;
+  margin-right: 8rpx;
+}
+
+.overview-title {
+  font-size: 26rpx;
+  color: #8E8E93;
+}
+
+.overview-amount {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #000;
+  display: block;
+}
+
+.overview-amount.highlight {
+  color: #FF3B30;
+}
+
+.overview-amount.success {
+  color: #34C759;
+}
+
+.overview-desc {
+  font-size: 22rpx;
+  color: #8E8E93;
+  margin-top: 4rpx;
+  display: block;
+}
+
+/* 通用区块 */
+.section {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 1rpx 3rpx rgba(0,0,0,0.1);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 20rpx 16rpx;
+  border-bottom: 1rpx solid #E5E5EA;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #000;
+}
+
+.section-more {
+  font-size: 24rpx;
+  color: #8E8E93;
+}
+
+/* 消费明细 */
+.stats-list {
+  padding: 0 20rpx;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #E5E5EA;
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-row.total {
+  border-top: 1rpx solid #E5E5EA;
+  margin-top: 12rpx;
+  padding-top: 24rpx;
+}
+
+.stat-label {
+  font-size: 28rpx;
+  color: #3C3C43;
+}
+
+.stat-row.total .stat-label {
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 28rpx;
+  color: #3C3C43;
+}
+
+.stat-row.total .stat-value {
+  font-weight: 600;
+  font-size: 32rpx;
+}
+
+/* 分类列表 */
+.category-list {
+  padding: 8rpx 0;
+}
+
+.category-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+}
+
+.category-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  margin-right: 16rpx;
+}
+
+.category-info {
+  flex: 1;
+}
+
 .category-name {
   font-size: 28rpx;
-  color: #333;
+  color: #3C3C43;
+  display: block;
 }
 
 .category-count {
   font-size: 24rpx;
-  color: #999;
-}
-
-.category-progress {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.progress-bar {
-  flex: 1;
-  height: 12rpx;
-  background: #E0E0E0;
-  border-radius: 6rpx;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-  border-radius: 6rpx;
+  color: #8E8E93;
 }
 
 .category-amount {
-  font-size: 26rpx;
-  color: #666;
-  min-width: 100rpx;
   text-align: right;
 }
 
-.daily-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24rpx;
+.category-amount text {
+  display: block;
+  font-size: 28rpx;
+  color: #3C3C43;
 }
 
-.daily-item {
-  display: flex;
-  gap: 24rpx;
+.category-percent {
+  font-size: 22rpx;
+  color: #8E8E93;
 }
 
-.daily-date {
-  font-size: 24rpx;
-  color: #999;
-  min-width: 120rpx;
-  padding-top: 16rpx;
+/* 待付日程 */
+.upcoming-list {
+  padding: 0 20rpx;
 }
 
-.daily-records {
-  flex: 1;
+.upcoming-item {
   display: flex;
-  flex-direction: column;
-  gap: 12rpx;
-}
-
-.record-item {
-  display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  padding: 20rpx;
-  background: #FFF5F5;
-  border-radius: 12rpx;
-  border-left: 4rpx solid #FF6B6B;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #E5E5EA;
 }
 
-.record-info {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
+.upcoming-item:last-child {
+  border-bottom: none;
 }
 
-.record-name {
+.upcoming-info {
+  flex: 1;
+}
+
+.upcoming-name {
   font-size: 28rpx;
-  color: #333;
+  color: #3C3C43;
+  display: block;
+  margin-bottom: 4rpx;
 }
 
-.record-category {
+.upcoming-date {
   font-size: 24rpx;
+  color: #8E8E93;
 }
 
-.record-amount {
+.upcoming-right {
   display: flex;
   align-items: center;
-  gap: 16rpx;
-  font-size: 28rpx;
-  color: #FF6B6B;
-  font-weight: 500;
 }
 
-.mark-paid {
-  width: 48rpx;
-  height: 48rpx;
-  background: #07C160;
-  color: #fff;
-  border-radius: 50%;
+.upcoming-amount {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #FF3B30;
+  margin-right: 16rpx;
+}
+
+.pay-btn {
+  font-size: 24rpx;
+  color: #007AFF;
+  background: #007AFF20;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+/* 空状态 */
+.empty-state {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 28rpx;
+  padding: 100rpx 0;
 }
 
-.empty-state {
-  text-align: center;
-  padding: 80rpx;
-  color: #999;
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
   font-size: 28rpx;
+  color: #8E8E93;
 }

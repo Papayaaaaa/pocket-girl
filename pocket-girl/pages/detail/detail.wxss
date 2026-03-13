@@ -1,18 +1,20 @@
-/* detail.wxss */
+/* detail.wxss - Apple Style */
 .container {
-  padding: 24rpx;
+  padding: 16rpx;
   padding-bottom: 200rpx;
+  background: #F2F2F7;
+  min-height: 100vh;
 }
 
 /* 逾期横幅 */
 .overdue-banner {
-  background: #FFF0F0;
-  border: 1rpx solid #FF6B6B;
+  background: #FFF2F0;
+  border: 1rpx solid #FFCCC7;
   border-radius: 12rpx;
   padding: 20rpx 24rpx;
   display: flex;
   align-items: center;
-  margin-bottom: 24rpx;
+  margin-bottom: 16rpx;
 }
 
 .overdue-icon {
@@ -21,15 +23,16 @@
 }
 
 .overdue-banner text {
-  color: #FF6B6B;
+  color: #FF3B30;
   font-size: 26rpx;
 }
 
 .card {
-  background: #fff;
+  background: #FFFFFF;
   border-radius: 16rpx;
   padding: 24rpx;
-  margin-bottom: 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 1rpx 3rpx rgba(0,0,0,0.1);
 }
 
 .detail-header {
@@ -41,33 +44,34 @@
 
 .detail-title {
   font-size: 36rpx;
-  font-weight: 600;
+  font-weight: 700;
   flex: 1;
   margin-right: 16rpx;
+  color: #000;
 }
 
 .tag {
   font-size: 22rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 6rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 8rpx;
 }
 
-.tag-guzi { background: #FFF0F6; color: #FF6B9D; }
-.tag-hanfu { background: #F6FFED; color: #52C41A; }
-.tag-lo { background: #FFF7E6; color: #FF9500; }
-.tag-other { background: #F5F5F5; color: #999; }
+.tag-guzi { background: #FF6B9D20; color: #FF6B9D; }
+.tag-hanfu { background: #34C75920; color: #34C759; }
+.tag-lo { background: #FF950020; color: #FF9500; }
+.tag-other { background: #8E8E9320; color: #8E8E93; }
 
 .detail-shop {
   font-size: 26rpx;
-  color: #666;
-  margin-bottom: 32rpx;
+  color: #8E8E93;
+  margin-bottom: 24rpx;
 }
 
 .detail-amounts {
-  background: #F5F5F7;
+  background: #F2F2F7;
   border-radius: 12rpx;
   padding: 24rpx;
-  margin-bottom: 24rpx;
+  margin-bottom: 16rpx;
 }
 
 .amount-row {
@@ -77,31 +81,32 @@
 }
 
 .amount-row:not(:last-child) {
-  border-bottom: 1rpx solid #E0E0E0;
+  border-bottom: 1rpx solid #E5E5EA;
 }
 
 .amount-row.total {
-  border-top: 2rpx solid #E0E0E0;
+  border-top: 1rpx solid #E5E5EA;
   margin-top: 12rpx;
-  padding-top: 20rpx;
+  padding-top: 16rpx;
   font-weight: 600;
 }
 
 .amount-label {
-  color: #666;
+  color: #8E8E93;
 }
 
 .amount {
   font-size: 30rpx;
-  font-weight: 500;
+  font-weight: 600;
+  color: #3C3C43;
 }
 
 .amount-paid {
-  color: #07C160;
+  color: #34C759;
 }
 
 .amount-pending {
-  color: #FF6B6B;
+  color: #FF3B30;
 }
 
 .amount-row.total .amount {
@@ -111,14 +116,14 @@
 .detail-deadline {
   display: flex;
   align-items: flex-start;
-  background: #FFF8E6;
+  background: #FFF9E6;
   border-radius: 12rpx;
   padding: 20rpx 24rpx;
-  margin-bottom: 24rpx;
+  margin-bottom: 16rpx;
 }
 
 .deadline-label {
-  color: #666;
+  color: #8E8E93;
   margin-right: 16rpx;
   flex-shrink: 0;
 }
@@ -130,7 +135,8 @@
 
 .deadline-date {
   font-size: 30rpx;
-  font-weight: 500;
+  font-weight: 600;
+  color: #3C3C43;
 }
 
 .deadline-date.urgent {
@@ -138,40 +144,41 @@
 }
 
 .deadline-date.overdue {
-  color: #FF6B6B;
+  color: #FF3B30;
 }
 
 .deadline-tip {
   margin-top: 4rpx;
   font-size: 24rpx;
-  color: #999;
+  color: #8E8E93;
 }
 
 .overdue-text {
-  color: #FF6B6B;
-  font-weight: 500;
+  color: #FF3B30;
+  font-weight: 600;
 }
 
 .detail-remark {
-  background: #F5F5F7;
+  background: #F2F2F7;
   border-radius: 12rpx;
   padding: 20rpx;
 }
 
 .remark-label {
   font-size: 24rpx;
-  color: #999;
+  color: #8E8E93;
   display: block;
   margin-bottom: 8rpx;
 }
 
 .remark-content {
   font-size: 28rpx;
-  color: #333;
+  color: #3C3C43;
+  line-height: 1.5;
 }
 
 .detail-images {
-  margin-top: 24rpx;
+  margin-top: 16rpx;
 }
 
 .images-scroll {
@@ -189,17 +196,17 @@
 
 /* 快捷支付 */
 .quick-pay-section {
-  margin-bottom: 24rpx;
+  margin-bottom: 16rpx;
 }
 
 .quick-pay-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
+  background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
   border-radius: 16rpx;
   padding: 28rpx;
-  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.3);
+  box-shadow: 0 6rpx 20rpx rgba(52,199,89,0.3);
 }
 
 .pay-icon {
@@ -208,7 +215,7 @@
 }
 
 .quick-pay-btn text {
-  color: #fff;
+  color: #FFFFFF;
   font-size: 32rpx;
   font-weight: 600;
 }
@@ -217,7 +224,7 @@
 .action-btns {
   display: flex;
   gap: 16rpx;
-  margin-bottom: 24rpx;
+  margin-bottom: 16rpx;
 }
 
 .action-btns .btn {
@@ -225,28 +232,28 @@
 }
 
 .btn-secondary {
-  background: #F0F0F0;
-  color: #333;
+  background: #F2F2F7;
+  color: #007AFF;
 }
 
 .btn-edit {
-  background: #07C160;
-  color: #fff;
+  background: #007AFF;
+  color: #FFFFFF;
 }
 
 .btn-danger {
-  background: #FFF0F0;
-  color: #FF6B6B;
+  background: #FFF2F0;
+  color: #FF3B30;
 }
 
 /* 分享 */
 .share-section {
-  margin-top: 24rpx;
+  margin-top: 16rpx;
 }
 
 .share-btn {
-  background: #F0F0F0;
-  color: #666;
+  background: #F2F2F7;
+  color: #007AFF;
   font-size: 28rpx;
   border: none;
   border-radius: 12rpx;

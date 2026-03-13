@@ -223,11 +223,17 @@ Page({
     })
   },
 
+  // 删除图片（编辑模式下）
   deleteImage(e) {
     const index = e.currentTarget.dataset.index
     const images = [...this.data.images]
     images.splice(index, 1)
     this.setData({ images })
+  },
+
+  // 编辑时显示删除按钮
+  canDeleteImage() {
+    return this.data.editId && this.data.images.length > 0
   },
 
   onInput(e) {

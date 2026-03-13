@@ -5,6 +5,7 @@
     "pages/detail/detail",
     "pages/stats/stats",
     "pages/monthly/monthly",
+    "pages/yearly/yearly",
     "pages/settings/settings"
   ],
   "cloud": true,

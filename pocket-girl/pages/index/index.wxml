@@ -1,11 +1,56 @@
 <!--index.wxml-->
 <view class="container">
-  <!-- 设置按钮 -->
+  <!-- 顶部栏 -->
   <view class="header-bar">
     <view class="header-title">尾款助手</view>
     <view class="header-actions">
-      <view class="monthly-icon" bindtap="goToMonthly">📊</view>
-      <view class="settings-icon" bindtap="goToSettings">⚙️</view>
+      <view class="action-icon" bindtap="toggleSearch">🔍</view>
+      <view class="action-icon" bindtap="goToYearly">📈</view>
+      <view class="action-icon" bindtap="goToMonthly">📊</view>
+      <view class="action-icon" bindtap="goToSettings">⚙️</view>
+    </view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-bar" wx:if="{{isSearching}}">
+    <input 
+      class="search-input" 
+      placeholder="搜索商品名称/店铺/分类..." 
+      value="{{searchQuery}}"
+      bindinput="onSearchInput"
+      confirm-type="search"
+    />
+    <view class="search-clear" bindtap="clearSearch" wx:if="{{searchQuery}}">✕</view>
+    <view class="search-cancel" bindtap="toggleSearch">取消</view>
+  </view>
+
+  <!-- 汇总栏 -->
+  <view class="summary-bar">
+    <view class="summary-item">
+      <text class="summary-value">{{summary.pendingCount}}</text>
+      <text class="summary-label">待尾款</text>
+    </view>
+    <view class="summary-item">
+      <text class="summary-value">¥{{summary.pendingAmount}}</text>
+      <text class="summary-label">待付金额</text>
+    </view>
+    <view class="summary-item">
+      <text class="summary-value">{{summary.paidCount}}</text>
+      <text class="summary-label">已完成</text>
+    </view>
+    <view class="summary-item" wx:if="{{summary.overdueCount > 0}}">
+      <text class="summary-value overdue">{{summary.overdueCount}}</text>
+      <text class="summary-label">已逾期</text>
+    </view>
+  </view>
+
+  <!-- 批量操作栏 -->
+  <view class="batch-bar" wx:if="{{isBatchMode}}">
+    <view class="batch-info">已选 {{selectedIds.length}} 项</view>
+    <view class="batch-actions">
+      <view class="batch-btn" bindtap="selectAll">全选</view>
+      <view class="batch-btn" bindtap="deselectAll">取消</view>
+      <view class="batch-btn delete" bindtap="batchDelete">删除</view>
     </view>
   </view>
 
@@ -14,15 +59,28 @@
     <view 
       class="filter-item {{filterType === 'all' ? 'active' : ''}}" 
       bindtap="setFilter" 
-      data-type="all">全部</view>
+      data-type="all">
+      全部 <text wx:if="{{filterType === 'all'}}" class="filter-count">({{records.length}})</text>
+    </view>
     <view 
       class="filter-item {{filterType === 'pending' ? 'active' : ''}}" 
       bindtap="setFilter" 
-      data-type="pending">待尾款</view>
+      data-type="pending">
+      待尾款 <text wx:if="{{filterType === 'pending'}}" class="filter-count">({{summary.pendingCount}})</text>
+    </view>
     <view 
       class="filter-item {{filterType === 'paid' ? 'active' : ''}}" 
       bindtap="setFilter" 
-      data-type="paid">已完成</view>
+      data-type="paid">
+      已完成 <text wx:if="{{filterType === 'paid'}}" class="filter-count">({{summary.paidCount}})</text>
+    </view>
+    <view 
+      class="filter-item {{filterType === 'overdue' ? 'active overdue-filter' : ''}}" 
+      bindtap="setFilter" 
+      data-type="overdue"
+      wx:if="{{summary.overdueCount > 0}}">
+      逾期 <text class="filter-count">({{summary.overdueCount}})</text>
+    </view>
   </view>
 
   <!-- 订单列表 -->
@@ -30,18 +88,29 @@
     <block wx:if="{{filteredRecords.length === 0}}">
       <view class="empty-state">
         <text class="empty-icon">📦</text>
-        <text class="empty-text">暂无记录\n点击下方 + 添加第一个订单</text>
+        <text class="empty-text">{{searchQuery ? '没有找到匹配的记录' : '暂无记录\n点击下方 + 添加第一个订单'}}</text>
       </view>
     </block>
     
     <block wx:for="{{filteredRecords}}" wx:key="id">
-      <view class="card record-card" bindtap="goToDetail" data-id="{{item.id}}">
+      <view 
+        class="card record-card {{item.isOverdue ? 'overdue' : ''}} {{isBatchMode ? 'selectable' : ''}}" 
+        bindtap="{{isBatchMode ? 'toggleSelect' : 'goToDetail'}}" 
+        data-id="{{item.id}}">
+        
+        <!-- 批量选择框 -->
+        <view class="checkbox" wx:if="{{isBatchMode}}">
+          <view class="checkbox-inner {{selectedIds.indexOf(item.id) > -1 ? 'checked' : ''}}">
+            <text wx:if="{{selectedIds.indexOf(item.id) > -1}}">✓</text>
+          </view>
+        </view>
+        
         <view class="record-header">
           <view class="record-title">{{item.name}}</view>
           <view class="tag tag-{{item.category}}">{{item.categoryText}}</view>
         </view>
         
-        <view class="record-shop">{{item.shop}}</view>
+        <view class="record-shop">{{item.shop || '未知店铺'}}</view>
         
         <view class="record-amounts">
           <view class="amount-item">
@@ -50,7 +119,7 @@
           </view>
           <view class="amount-item">
             <text class="amount-label">尾款</text>
-            <text class="amount amount-pending">¥{{item.tailPrice}}</text>
+            <text class="amount {{item.isPaid ? 'amount-paid' : 'amount-pending'}}">¥{{item.tailPrice}}</text>
           </view>
           <view class="amount-item">
             <text class="amount-label">总价</text>
@@ -59,22 +128,38 @@
         </view>
         
         <view class="record-footer">
-          <view class="deadline {{item.daysLeft <= 3 ? 'urgent' : ''}}">
+          <view class="deadline {{item.daysLeft <= 3 && !item.isPaid ? 'urgent' : ''}} {{item.isOverdue ? 'overdue' : ''}}">
             <text wx:if="{{item.isPaid}}">✅ 已完成</text>
-            <text wx:elif="{{item.daysLeft <= 0}}">⚠️ 已到期</text>
+            <text wx:elif="{{item.isOverdue}}">⚠️ 已逾期 {{-item.daysLeft}} 天</text>
             <text wx:elif="{{item.daysLeft <= 7}}">📅 {{item.daysLeft}}天后尾款</text>
             <text wx:else>📅 {{item.tailDeadline}}</text>
           </view>
-          <view class="status-badge {{item.isPaid ? 'paid' : 'pending'}}">
-            {{item.isPaid ? '已完成' : '待支付'}}
+          
+          <!-- 快捷支付按钮 -->
+          <view 
+            class="quick-pay-btn" 
+            wx:if="{{!item.isPaid && !isBatchMode}}" 
+            catchtap="quickPay" 
+            data-id="{{item.id}}">
+            付款
           </view>
         </view>
       </view>
     </block>
   </view>
 
-  <!-- 添加按钮 -->
-  <view class="add-btn" bindtap="goToAdd">
-    <text>+</text>
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="bottom-btn" bindtap="exportData">
+      <text class="bottom-icon">📤</text>
+      <text class="bottom-text">导出</text>
+    </view>
+    <view class="add-btn" bindtap="goToAdd">
+      <text class="add-icon">+</text>
+    </view>
+    <view class="bottom-btn" bindtap="toggleBatchMode">
+      <text class="bottom-icon">📋</text>
+      <text class="bottom-text">{{isBatchMode ? '取消' : '批量'}}</text>
+    </view>
   </view>
 </view>

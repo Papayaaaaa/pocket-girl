@@ -66,6 +66,12 @@
   letter-spacing: -1rpx;
 }
 
+.overview-count {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 4rpx;
+}
+
 .overview-amount.pending {
   color: #FFE066;
 }
@@ -121,6 +127,13 @@
   color: #333;
 }
 
+.count-badge {
+  font-size: 20rpx;
+  color: #999;
+  font-weight: 400;
+  margin-left: 8rpx;
+}
+
 .bar-track {
   height: 20rpx;
   background: #F5F5F7;
@@ -132,6 +145,13 @@
   height: 100%;
   border-radius: 10rpx;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.empty-category {
+  text-align: center;
+  padding: 40rpx;
+  color: #999;
+  font-size: 26rpx;
 }
 
 /* 近期到期 */

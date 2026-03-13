@@ -4,6 +4,7 @@
   <view class="period-tabs">
     <view class="tab-item {{currentPeriod === 'half' ? 'active' : ''}}" bindtap="switchPeriod" data-period="half">半月</view>
     <view class="tab-item {{currentPeriod === 'month' ? 'active' : ''}}" bindtap="switchPeriod" data-period="month">月度</view>
+    <view class="tab-item {{currentPeriod === 'year' ? 'active' : ''}}" bindtap="switchPeriod" data-period="year">年度</view>
   </view>
 
   <!-- 总览卡片 -->
@@ -13,10 +14,12 @@
       <view class="overview-item">
         <text class="overview-label">待支付</text>
         <text class="overview-amount pending">¥{{stats.pendingTail}}</text>
+        <text class="overview-count">{{stats.pendingCount}} 笔</text>
       </view>
       <view class="overview-item">
         <text class="overview-label">已完成</text>
         <text class="overview-amount paid">¥{{stats.paidTotal}}</text>
+        <text class="overview-count">{{stats.paidCount}} 笔</text>
       </view>
     </view>
     <view class="overview-total">
@@ -28,16 +31,19 @@
   <!-- 分类统计 -->
   <view class="card stats-category">
     <view class="stats-title">📊 分类统计</view>
-    <view class="category-bars">
+    <view class="category-bars" wx:if="{{categoryStats.length > 0}}">
       <view class="category-bar-item" wx:for="{{categoryStats}}" wx:key="category">
         <view class="bar-label">
           <text>{{item.name}}</text>
-          <text>¥{{item.amount}}</text>
+          <text>¥{{item.amount}} <text class="count-badge">{{item.count}}笔</text></text>
         </view>
         <view class="bar-track">
           <view class="bar-fill" style="width: {{item.percent}}%; background: {{item.color}}"></view>
         </view>
       </view>
+    </view>
+    <view class="empty-category" wx:else>
+      <text>暂无数据</text>
     </view>
   </view>
 

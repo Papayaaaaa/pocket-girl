@@ -15,10 +15,16 @@ Page({
     }
   },
 
-  onLoad() {
+  onLoad(options) {
     const now = new Date()
-    const year = now.getFullYear()
-    const month = now.getMonth() + 1
+    let year = now.getFullYear()
+    let month = now.getMonth() + 1
+    
+    // 如果有传入参数
+    if (options.year && options.month) {
+      year = parseInt(options.year)
+      month = parseInt(options.month)
+    }
     
     // 生成最近1个月+未来11个月的选项（共12个月）
     const months = []

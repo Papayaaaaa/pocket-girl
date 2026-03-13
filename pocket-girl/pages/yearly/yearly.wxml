@@ -1,0 +1,77 @@
+<!--yearly.wxml-->
+<view class="container">
+  <!-- 年份选择 -->
+  <view class="year-picker">
+    <picker 
+      mode="selector" 
+      range="{{years}}" 
+      bindchange="onYearChange"
+      value="{{years.indexOf(currentYear)}}">
+      <view class="year-btn">
+        <text class="year-icon">◀</text>
+        <text class="year-text">{{currentYear}} 年</text>
+        <text class="year-icon">▶</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 年度汇总 -->
+  <view class="card year-overview">
+    <view class="overview-title">{{currentYear}} 年度消费</view>
+    <view class="overview-amount">¥{{stats.totalAmount}}</view>
+    <view class="overview-detail">
+      <view class="detail-item">
+        <text class="detail-label">已完成</text>
+        <text class="detail-value paid">¥{{stats.paidAmount}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">待支付</text>
+        <text class="detail-value pending">¥{{stats.pendingAmount}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">订单数</text>
+        <text class="detail-value">{{stats.totalRecords}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 月度趋势 -->
+  <view class="card">
+    <view class="section-title">📈 月度趋势</view>
+    <view class="monthly-grid">
+      <view 
+        class="month-item" 
+        wx:for="{{monthlyData}}" 
+        wx:key="month"
+        bindtap="goToDetail"
+        data-month="{{item.month}}">
+        <view class="month-label">{{item.label}}</view>
+        <view class="month-amount">¥{{item.total}}</view>
+        <view class="month-count">{{item.count}}笔</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类统计 -->
+  <view class="card">
+    <view class="section-title">📊 分类统计</view>
+    <view class="category-list" wx:if="{{categoryStats.length > 0}}">
+      <view class="category-item" wx:for="{{categoryStats}}" wx:key="category">
+        <view class="category-info">
+          <view class="category-dot" style="background: {{item.color}}"></view>
+          <text class="category-name">{{item.name}}</text>
+        </view>
+        <view class="category-stats">
+          <text class="category-amount">¥{{item.amount}}</text>
+          <text class="category-percent">{{item.percent}}%</text>
+        </view>
+        <view class="category-bar">
+          <view class="category-fill" style="width: {{item.percent}}%; background: {{item.color}}"></view>
+        </view>
+      </view>
+    </view>
+    <view class="empty-state" wx:else>
+      <text>暂无数据</text>
+    </view>
+  </view>
+</view>

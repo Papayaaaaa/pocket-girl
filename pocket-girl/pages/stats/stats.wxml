@@ -1,55 +1,96 @@
 <!--stats.wxml-->
 <view class="container">
-  <!-- 统计周期切换 -->
+  <!-- 年份选择 -->
+  <view class="year-selector">
+    <picker mode="selector" range="{{years}}" bindchange="onYearChange" value="{{years.indexOf(selectedYear)}}">
+      <view class="year-picker">
+        <text>{{selectedYear}} 年</text>
+        <text class="arrow">›</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 周期切换 -->
   <view class="period-tabs">
-    <view class="tab-item {{currentPeriod === 'half' ? 'active' : ''}}" bindtap="switchPeriod" data-period="half">半月</view>
     <view class="tab-item {{currentPeriod === 'month' ? 'active' : ''}}" bindtap="switchPeriod" data-period="month">月度</view>
+    <view class="tab-item {{currentPeriod === 'half' ? 'active' : ''}}" bindtap="switchPeriod" data-period="half">半年</view>
     <view class="tab-item {{currentPeriod === 'year' ? 'active' : ''}}" bindtap="switchPeriod" data-period="year">年度</view>
   </view>
 
-  <!-- 总览卡片 -->
-  <view class="card stats-overview">
-    <view class="overview-title">💰 {{periodLabel}}消费总览</view>
-    <view class="overview-grid">
-      <view class="overview-item">
-        <text class="overview-label">待支付</text>
-        <text class="overview-amount pending">¥{{stats.pendingTail}}</text>
-        <text class="overview-count">{{stats.pendingCount}} 笔</text>
+  <!-- 消费概览 -->
+  <view class="overview-section">
+    <view class="overview-card">
+      <view class="overview-header">
+        <text class="overview-icon">✅</text>
+        <text class="overview-label">已支付</text>
       </view>
-      <view class="overview-item">
-        <text class="overview-label">已完成</text>
-        <text class="overview-amount paid">¥{{stats.paidTotal}}</text>
-        <text class="overview-count">{{stats.paidCount}} 笔</text>
-      </view>
+      <text class="overview-amount paid">¥{{overview.pastPaid}}</text>
+      <text class="overview-desc">{{overview.paidCount}} 笔已完成</text>
     </view>
-    <view class="overview-total">
-      <text>累计消费</text>
-      <text class="total-amount">¥{{stats.total}}</text>
+    
+    <view class="overview-card">
+      <view class="overview-header">
+        <text class="overview-icon">📅</text>
+        <text class="overview-label">待支付</text>
+      </view>
+      <text class="overview-amount pending">¥{{overview.futurePending}}</text>
+      <text class="overview-desc">{{overview.pendingCount}} 笔预计</text>
+    </view>
+  </view>
+
+  <!-- 月度趋势 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">月度趋势</text>
+    </view>
+    <view class="monthly-chart">
+      <view class="chart-bars">
+        <view class="chart-bar-item" wx:for="{{monthlyData}}" wx:key="month">
+          <view class="bar-wrapper">
+            <view class="bar-paid" style="height: {{item.paid / 100 * 100}}%"></view>
+            <view class="bar-pending" style="height: {{item.pending / 100 * 100}}%"></view>
+          </view>
+          <text class="bar-label">{{item.month}}月</text>
+        </view>
+      </view>
+      <view class="chart-legend">
+        <view class="legend-item">
+          <view class="legend-dot paid"></view>
+          <text>已支付</text>
+        </view>
+        <view class="legend-item">
+          <view class="legend-dot pending"></view>
+          <text>待支付</text>
+        </view>
+      </view>
     </view>
   </view>
 
   <!-- 分类统计 -->
-  <view class="card stats-category">
-    <view class="stats-title">📊 分类统计</view>
-    <view class="category-bars" wx:if="{{categoryStats.length > 0}}">
-      <view class="category-bar-item" wx:for="{{categoryStats}}" wx:key="category">
-        <view class="bar-label">
-          <text>{{item.name}}</text>
-          <text>¥{{item.amount}} <text class="count-badge">{{item.count}}笔</text></text>
+  <view class="section" wx:if="{{categoryStats.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">分类分布</text>
+    </view>
+    <view class="category-list">
+      <view class="category-item" wx:for="{{categoryStats}}" wx:key="category">
+        <view class="category-icon" style="background: {{item.color}}20; color: {{item.color}}">{{item.icon}}</view>
+        <view class="category-info">
+          <text class="category-name">{{item.name}}</text>
+          <text class="category-count">{{item.count}} 笔</text>
         </view>
-        <view class="bar-track">
-          <view class="bar-fill" style="width: {{item.percent}}%; background: {{item.color}}"></view>
+        <view class="category-amount">
+          <text>¥{{item.amount}}</text>
+          <text class="category-percent">{{item.percent}}%</text>
         </view>
       </view>
     </view>
-    <view class="empty-category" wx:else>
-      <text>暂无数据</text>
-    </view>
   </view>
 
-  <!-- 近期到期 -->
-  <view class="card upcoming-section" wx:if="{{upcomingRecords.length > 0}}">
-    <view class="stats-title">⏰ 近期需要尾款</view>
+  <!-- 近期待付 -->
+  <view class="section" wx:if="{{upcomingRecords.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">近期待付</text>
+    </view>
     <view class="upcoming-list">
       <view class="upcoming-item" wx:for="{{upcomingRecords}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
         <view class="upcoming-info">

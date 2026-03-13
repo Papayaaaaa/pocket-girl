@@ -151,14 +151,14 @@
   <!-- 底部操作栏 -->
   <view class="bottom-bar">
     <view class="bottom-btn" bindtap="exportData">
-      <text class="bottom-icon">📤</text>
+      <view class="bottom-icon-wrap">📤</view>
       <text class="bottom-text">导出</text>
     </view>
     <view class="add-btn" bindtap="goToAdd">
       <text class="add-icon">+</text>
     </view>
     <view class="bottom-btn" bindtap="toggleBatchMode">
-      <text class="bottom-icon">📋</text>
+      <view class="bottom-icon-wrap">📋</view>
       <text class="bottom-text">{{isBatchMode ? '取消' : '批量'}}</text>
     </view>
   </view>

@@ -74,8 +74,15 @@ Page({
       const monthStart = new Date(year, month, 1)
       const monthEnd = new Date(year, month + 1, 0)
       
-      // 该月的所有记录（按尾款截止日）
-      const monthRecords = records.filter(r => {
+      // 该月支付的所有记录（按支付时间/创建时间）
+      const paidInMonth = records.filter(r => {
+        if (!r.createdAt) return false
+        const created = new Date(r.createdAt)
+        return created >= monthStart && created <= monthEnd && r.isPaid
+      })
+      
+      // 该月到期的所有记录（按尾款截止日）
+      const dueInMonth = records.filter(r => {
         if (!r.tailDeadline) return false
         const deadline = new Date(r.tailDeadline)
         return deadline >= monthStart && deadline <= monthEnd
@@ -85,27 +92,36 @@ Page({
       let pending = 0
       let deposit = 0
       
-      monthRecords.forEach(r => {
-        const tailPrice = r.tailPrice || 0
+      // 已支付：定金算在创建月份，尾款算在尾款截止月份
+      paidInMonth.forEach(r => {
         const depositAmt = r.deposit || 0
-        const total = tailPrice + depositAmt
-        
-        if (r.isPaid) {
-          paid += total
-          deposit += depositAmt
-          paidCount++
-        } else {
-          pending += tailPrice  // 未支付只算尾款
-          pendingCount++
-        }
+        const tailPrice = r.tailPrice || 0
+        // 定金在创建月统计
+        deposit += depositAmt
+        // 尾款在尾款截止月统计（这里简化处理，算在尾款到期月）
       })
+      
+      // 按尾款截止日统计已支付尾款
+      dueInMonth.filter(r => r.isPaid).forEach(r => {
+        paid += r.tailPrice || 0
+        paidCount++
+      })
+      
+      // 未支付的尾款
+      dueInMonth.filter(r => !r.isPaid).forEach(r => {
+        pending += r.tailPrice || 0
+        pendingCount++
+      })
+      
+      // 计算该月已支付总额 = 定金（当月创建的）+ 尾款（当月到期的已支付）
+      const monthPaid = deposit + dueInMonth.filter(r => r.isPaid).reduce((sum, r) => sum + (r.tailPrice || 0), 0)
       
       // 判断是过去还是未来
       const isPast = monthEnd < today
       const isCurrent = monthStart <= today && monthEnd >= today
       
       if (isPast) {
-        totalPaid += paid
+        totalPaid += monthPaid
         depositPaid += deposit
       } else {
         totalPending += pending
@@ -114,12 +130,13 @@ Page({
       monthlyData.push({
         month: month + 1,
         label: (month + 1) + '月',
-        paid: paid.toFixed(2),
+        paid: monthPaid.toFixed(2),
+        deposit: deposit.toFixed(2),
         pending: pending.toFixed(2),
-        total: (paid + pending).toFixed(2),
+        total: (monthPaid + pending).toFixed(2),
         isPast,
         isCurrent,
-        count: monthRecords.length
+        count: paidInMonth.length + dueInMonth.length
       })
     }
     

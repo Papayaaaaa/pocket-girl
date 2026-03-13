@@ -8,14 +8,8 @@
         <text class="setting-label">AI 提供商</text>
         <text class="setting-desc">选择要使用的 AI 服务</text>
       </view>
-      <picker 
-        mode="selector" 
-        range="{{aiProviderOptions}}" 
-        bindchange="onAiProviderChange"
-        value="{{aiProviderIndex}}">
-        <view class="picker-value">
-          {{aiProviderOptions[aiProviderIndex]}} ›
-        </view>
+      <picker mode="selector" range="{{aiProviderOptions}}" bindchange="onAiProviderChange" value="{{aiProviderIndex}}">
+        <view class="picker-value">{{aiProviderOptions[aiProviderIndex]}} ›</view>
       </picker>
     </view>
     <view class="setting-item column">
@@ -23,13 +17,7 @@
         <text class="setting-label">API Key</text>
         <text class="setting-desc">输入你的 AI API Key</text>
       </view>
-      <input 
-        class="api-input" 
-        placeholder="请输入 API Key"
-        value="{{aiApiKey}}"
-        bindinput="onAiApiKeyInput"
-        password="true"
-      />
+      <input class="api-input" placeholder="请输入 API Key" value="{{aiApiKey}}" bindinput="onAiApiKeyInput" password="true" />
     </view>
     <view class="bind-tip">
       <text wx:if="{{aiApiKey}}">✅ API Key 已配置</text>
@@ -45,28 +33,15 @@
         <text class="setting-label">开启尾款提醒</text>
         <text class="setting-desc">在尾款到期前收到服务号推送提醒</text>
       </view>
-      <switch 
-        checked="{{enableReminder}}" 
-        bindchange="toggleReminder"
-        color="#07C160"
-      />
+      <switch checked="{{enableReminder}}" bindchange="toggleReminder" color="#07C160" />
     </view>
-    
-    <!-- 自定义提醒日期 -->
     <view class="setting-item column" wx:if="{{enableReminder}}">
       <view class="setting-info">
         <text class="setting-label">提醒日期</text>
         <text class="setting-desc">选择要提前提醒的天数（可多选）</text>
       </view>
       <view class="remind-days-grid">
-        <view 
-          class="remind-day-item {{customRemindDays.indexOf(item) > -1 ? 'active' : ''}}" 
-          wx:for="{{remindDaysOptions}}" 
-          wx:key="*this"
-          bindtap="toggleRemindDay"
-          data-day="{{item}}">
-          {{item}}天
-        </view>
+        <view class="remind-day-item {{customRemindDays.indexOf(item) > -1 ? 'active' : ''}}" wx:for="{{remindDaysOptions}}" wx:key="*this" bindtap="toggleRemindDay" data-day="{{item}}">{{item}}天</view>
       </view>
       <text class="remind-days-tip">当前：提前 {{customRemindDays.join('、')}} 天提醒</text>
     </view>
@@ -76,30 +51,16 @@
   <view class="section">
     <view class="section-title">📱 服务号绑定</view>
     <view class="bind-tip">
-      <text wx:if="{{!hasBind}}">
-        点击下方按钮绑定服务号，绑定后才能接收推送提醒
-      </text>
-      <text wx:else class="bind-success">
-        ✅ 已成功绑定服务号
-      </text>
+      <text wx:if="{{!hasBind}}">点击下方按钮绑定服务号，绑定后才能接收推送提醒</text>
+      <text wx:else class="bind-success">✅ 已成功绑定服务号</text>
     </view>
-    <button 
-      wx:if="{{!hasBind}}" 
-      class="btn bind-btn" 
-      bindtap="bindServiceAccount">
-      绑定服务号
-    </button>
+    <button wx:if="{{!hasBind}}" class="btn bind-btn" bindtap="bindServiceAccount">绑定服务号</button>
   </view>
 
   <!-- 测试推送 -->
   <view class="section">
     <view class="section-title">📤 测试推送</view>
-    <button 
-      class="btn test-btn" 
-      bindtap="testPush"
-      disabled="{{!enableReminder}}">
-      发送测试消息
-    </button>
+    <button class="btn test-btn" bindtap="testPush" disabled="{{!enableReminder}}">发送测试消息</button>
   </view>
 
   <!-- 数据管理 -->

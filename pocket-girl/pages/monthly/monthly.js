@@ -5,6 +5,7 @@ Page({
     currentMonth: 3,
     months: [],
     selectedMonth: '',
+    selectedIndex: 0,
     monthData: null,
     categoryStats: [],
     upcomingList: [],
@@ -57,7 +58,8 @@ Page({
       currentYear: year,
       currentMonth: month,
       months: months,
-      selectedMonth: `${year}-${month.toString().padStart(2, '0')}`
+      selectedMonth: `${year}-${month.toString().padStart(2, '0')}`,
+      selectedIndex: months.findIndex(m => m.value === `${year}-${month.toString().padStart(2, '0')}`)
     })
     
     this.loadMonthData()
@@ -66,7 +68,10 @@ Page({
   onMonthChange(e) {
     const index = e.detail.value
     const selectedMonth = this.data.months[index].value
-    this.setData({ selectedMonth })
+    this.setData({ 
+      selectedMonth,
+      selectedIndex: index
+    })
     this.loadMonthData()
   },
 

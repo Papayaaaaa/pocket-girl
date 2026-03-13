@@ -2,7 +2,7 @@
 <view class="container">
   <!-- 月份选择器 -->
   <view class="month-selector">
-    <picker mode="selector" range="{{months}}" range-key="label" bindchange="onMonthChange" value="{{months.indexOf(months.find(m => m.value === selectedMonth))}}">
+    <picker mode="selector" range="{{months}}" range-key="label" bindchange="onMonthChange" value="{{selectedIndex}}">
       <view class="month-picker">
         <text class="month-label">{{selectedMonth}}</text>
         <text class="arrow">›</text>

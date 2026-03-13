@@ -68,7 +68,7 @@
           {{item}}天
         </view>
       </view>
-      <text class="remind-days-tip">当前：提前 {{customRemindDays.join('、')} } 天提醒</text>
+      <text class="remind-days-tip">当前：提前 {{customRemindDays.join('、')}} 天提醒</text>
     </view>
   </view>
 
